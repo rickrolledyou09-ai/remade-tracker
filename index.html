@@ -403,6 +403,14 @@
                     <div class="stat-label">Total Expenses</div>
                     <div class="stat-value">€<span id="totalExpenses">0.00</span></div>
                 </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-value">€<span id="totalRevenue">0.00</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Profit</div>
+                    <div class="stat-value">€<span id="totalProfit">0.00</span></div>
+                </div>
             </div>
 
             <div class="nav-buttons">
@@ -451,6 +459,10 @@
                         <div class="form-group">
                             <label>Material Expenses (€)</label>
                             <input type="number" id="bagExpenses" min="0" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Selling Price (€)</label>
+                            <input type="number" id="bagPrice" min="0" step="0.01" value="0">
                         </div>
                     </div>
                     
@@ -557,6 +569,10 @@
                         <label>Material Expenses (€)</label>
                         <input type="number" id="editBagExpenses" min="0" step="0.01" value="0">
                     </div>
+                    <div class="form-group">
+                        <label>Selling Price (€)</label>
+                        <input type="number" id="editBagPrice" min="0" step="0.01" value="0">
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -652,6 +668,12 @@
             
             const totalExp = data.bags.reduce((sum, b) => sum + (b.expenses || 0), 0);
             document.getElementById('totalExpenses').textContent = totalExp.toFixed(2);
+            
+            const totalRev = data.bags.reduce((sum, b) => sum + (b.price || 0), 0);
+            document.getElementById('totalRevenue').textContent = totalRev.toFixed(2);
+            
+            const totalProfit = totalRev - totalExp;
+            document.getElementById('totalProfit').textContent = totalProfit.toFixed(2);
 
             // Collection selects
             const selects = document.querySelectorAll('select[id*="bagColl"], select[id*="editBagColl"]');
@@ -678,6 +700,7 @@
                 let html = '';
                 data.bags.forEach(bag => {
                     const coll = data.collections.find(c => c.id === bag.collection);
+                    const profit = (bag.price || 0) - (bag.expenses || 0);
                     html += `
                         <div class="item-card">
                             <div class="item-info">
@@ -686,6 +709,8 @@
                                     <strong>Status:</strong> ${bag.status}<br>
                                     <strong>Hours:</strong> ${(bag.hours || 0).toFixed(1)}h<br>
                                     <strong>Expenses:</strong> €${(bag.expenses || 0).toFixed(2)}<br>
+                                    <strong>Selling Price:</strong> €${(bag.price || 0).toFixed(2)}<br>
+                                    <strong>Profit:</strong> €${profit.toFixed(2)}<br>
                                     ${coll ? `<strong>Collection:</strong> ${coll.name}<br>` : ''}
                                     ${bag.materials ? `<strong>Materials:</strong> ${bag.materials}<br>` : ''}
                                     ${bag.description ? `<strong>Notes:</strong> ${bag.description}` : ''}
@@ -754,6 +779,7 @@
                 status: document.getElementById('bagStatus').value,
                 hours: parseFloat(document.getElementById('bagHours').value) || 0,
                 expenses: parseFloat(document.getElementById('bagExpenses').value) || 0,
+                price: parseFloat(document.getElementById('bagPrice').value) || 0,
                 materials: document.getElementById('bagMaterials').value,
                 description: document.getElementById('bagDesc').value
             };
@@ -776,6 +802,7 @@
             document.getElementById('editBagStatus').value = bag.status;
             document.getElementById('editBagHours').value = bag.hours;
             document.getElementById('editBagExpenses').value = bag.expenses;
+            document.getElementById('editBagPrice').value = bag.price || 0;
             document.getElementById('editBagMaterials').value = bag.materials || '';
             document.getElementById('editBagDesc').value = bag.description || '';
             
@@ -798,6 +825,7 @@
                 bag.status = document.getElementById('editBagStatus').value;
                 bag.hours = parseFloat(document.getElementById('editBagHours').value) || 0;
                 bag.expenses = parseFloat(document.getElementById('editBagExpenses').value) || 0;
+                bag.price = parseFloat(document.getElementById('editBagPrice').value) || 0;
                 bag.materials = document.getElementById('editBagMaterials').value;
                 bag.description = document.getElementById('editBagDesc').value;
                 
