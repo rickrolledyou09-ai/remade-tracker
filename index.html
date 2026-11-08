@@ -3,136 +3,889 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReMade Studio</title>
+    <title>ReMade Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #F5F0E6; color: #30332E; padding: 40px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        h1 { font-family: 'Crimson Text', serif; font-size: 42px; color: #193D30; margin-bottom: 30px; }
-        .card { background: white; padding: 30px; border: 1px solid #E8E4D8; border-radius: 10px; margin-bottom: 30px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-size: 11px; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #E8E4D8; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; }
-        button { background: #193D30; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-transform: uppercase; font-size: 13px; }
-        button:hover { background: #0F2A22; }
-        .bag-item { background: #FAFAF8; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #193D30; }
-        .bag-item strong { color: #193D30; }
-        .message { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
-        .message.success { background: #F0F7F4; color: #6B9A7E; border: 1px solid #6B9A7E; }
-        .message.error { background: #FDF1ED; color: #C65D47; border: 1px solid #C65D47; }
-        .status { font-size: 12px; color: #A7AE98; padding: 10px; background: #FAFAF8; border-radius: 6px; margin-bottom: 20px; }
+        
+        :root {
+            --forest-green: #193D30;
+            --cream: #F5F0E6;
+            --sage: #A7AE98;
+            --beige: #DCD2C2;
+            --charcoal: #30332E;
+            --white: #FFFFFF;
+            --light-bg: #FAFAF8;
+            --border: #E8E4D8;
+        }
+        
+        html, body { height: 100%; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--cream); 
+            color: var(--charcoal);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3 { font-family: 'Crimson Text', serif; font-weight: 600; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        
+        header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 30px 0;
+            margin-bottom: 40px;
+        }
+        
+        .logo { 
+            font-family: 'Crimson Text', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--forest-green);
+            margin-bottom: 8px;
+        }
+        
+        .tagline { 
+            font-size: 12px;
+            color: var(--sage);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--sage);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: var(--sage);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-family: 'Crimson Text', serif;
+            font-size: 36px;
+            color: var(--forest-green);
+            font-weight: 600;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 14px 28px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: var(--forest-green);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background: #0F2A22;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--light-bg);
+            color: var(--charcoal);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--beige);
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 11px;
+        }
+        
+        .btn-delete {
+            background: #C65D47;
+            color: white;
+            padding: 6px 12px;
+            font-size: 11px;
+        }
+        
+        .btn-delete:hover {
+            background: #A84A39;
+        }
+        
+        .btn-edit {
+            background: var(--sage);
+            color: white;
+            padding: 6px 12px;
+            font-size: 11px;
+        }
+        
+        .btn-edit:hover {
+            background: #8a924d;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 32px;
+            color: var(--charcoal);
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .card-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 20px;
+            color: var(--charcoal);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--charcoal);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--charcoal);
+            transition: all 0.2s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--forest-green);
+            box-shadow: 0 0 0 3px rgba(25, 61, 48, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .item-card {
+            background: var(--light-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 20px;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-family: 'Crimson Text', serif;
+            font-size: 18px;
+            color: var(--charcoal);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .item-meta {
+            font-size: 12px;
+            color: var(--sage);
+            line-height: 1.6;
+        }
+        
+        .item-meta strong {
+            color: var(--charcoal);
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--sage);
+        }
+        
+        .empty-state p {
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .message.success {
+            background: #F0F7F4;
+            color: #6B9A7E;
+            border-color: #6B9A7E;
+        }
+        
+        .message.error {
+            background: #FDF1ED;
+            color: #C65D47;
+            border-color: #C65D47;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            font-family: 'Crimson Text', serif;
+            font-size: 28px;
+            color: var(--charcoal);
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--sage);
+            padding: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav-buttons { flex-direction: column; }
+            button { width: 100%; }
+            .item-card { flex-direction: column; }
+            .item-actions { justify-content: flex-start; }
+        }
     </style>
 </head>
 <body>
+    <header>
+        <div class="container">
+            <div class="logo">ReMade</div>
+            <div class="tagline">Studio Tracker</div>
+        </div>
+    </header>
+
     <div class="container">
-        <h1>ReMade Studio</h1>
-        
-        <div class="status">
-            Firebase Status: <span id="fbStatus">Initializing...</span>
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="section active">
+            <div id="message"></div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Bags</div>
+                    <div class="stat-value" id="totalBags">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Hours</div>
+                    <div class="stat-value" id="totalHours">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Collections</div>
+                    <div class="stat-value" id="totalColls">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Expenses</div>
+                    <div class="stat-value">€<span id="totalExpenses">0.00</span></div>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn-primary" onclick="showSection('createBag')">+ Create Bag</button>
+                <button class="btn-primary" onclick="showSection('createColl')">+ Create Collection</button>
+                <button class="btn-secondary" onclick="showSection('overview')">Overview</button>
+            </div>
         </div>
 
-        <div id="msg"></div>
-
-        <div class="card">
-            <h2 style="font-family: 'Crimson Text', serif; font-size: 24px; margin-bottom: 20px;">Create New Bag</h2>
-            <form id="bagForm">
-                <div class="form-group">
-                    <label>Bag Name *</label>
-                    <input type="text" id="bagName" required>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="bagDesc" rows="3"></textarea>
-                </div>
-                <button type="submit">Create Bag</button>
-            </form>
+        <!-- CREATE BAG -->
+        <div id="createBag" class="section">
+            <h2 class="section-title">Create New Bag</h2>
+            <div class="card">
+                <form id="bagForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Bag Name *</label>
+                            <input type="text" id="bagName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Collection (optional)</label>
+                            <select id="bagColl"></select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date Created</label>
+                            <input type="date" id="bagDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="bagStatus">
+                                <option>Planning</option>
+                                <option>In Progress</option>
+                                <option>Finished</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Hours Worked</label>
+                            <input type="number" id="bagHours" min="0" step="0.5" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Material Expenses (€)</label>
+                            <input type="number" id="bagExpenses" min="0" step="0.01" value="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Materials Used</label>
+                        <textarea id="bagMaterials" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Description / Notes</label>
+                        <textarea id="bagDesc" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Create Bag</button>
+                    <button type="button" class="btn-secondary" onclick="showSection('dashboard')" style="margin-left: 10px;">Cancel</button>
+                </form>
+            </div>
         </div>
 
-        <div class="card">
-            <h2 style="font-family: 'Crimson Text', serif; font-size: 24px; margin-bottom: 20px;">My Bags</h2>
-            <div id="bagsList">Loading...</div>
+        <!-- CREATE COLLECTION -->
+        <div id="createColl" class="section">
+            <h2 class="section-title">Create New Collection</h2>
+            <div class="card">
+                <form id="collForm">
+                    <div class="form-group">
+                        <label>Collection Name *</label>
+                        <input type="text" id="collName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="collDesc" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Creation Date</label>
+                        <input type="date" id="collDate">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Create Collection</button>
+                    <button type="button" class="btn-secondary" onclick="showSection('dashboard')" style="margin-left: 10px;">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div id="overview" class="section">
+            <h2 class="section-title">Overview</h2>
+            
+            <button class="btn-secondary" onclick="showSection('dashboard')" style="margin-bottom: 30px;">← Back to Dashboard</button>
+            
+            <div class="card">
+                <div class="card-title">All Bags</div>
+                <div id="allBags"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">All Collections</div>
+                <div id="allColls"></div>
+            </div>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
-    
-    <script>
-        let db = null;
+    <!-- EDIT BAG MODAL -->
+    <div id="editBagModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEditBagModal()">&times;</button>
+            <div class="modal-header">Edit Bag</div>
+            <form id="editBagForm">
+                <input type="hidden" id="editBagId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Bag Name *</label>
+                        <input type="text" id="editBagName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Collection (optional)</label>
+                        <select id="editBagColl"></select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date Created</label>
+                        <input type="date" id="editBagDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="editBagStatus">
+                            <option>Planning</option>
+                            <option>In Progress</option>
+                            <option>Finished</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hours Worked</label>
+                        <input type="number" id="editBagHours" min="0" step="0.5" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Material Expenses (€)</label>
+                        <input type="number" id="editBagExpenses" min="0" step="0.01" value="0">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Materials Used</label>
+                    <textarea id="editBagMaterials" rows="2"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description / Notes</label>
+                    <textarea id="editBagDesc" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <button type="button" class="btn-secondary" onclick="closeEditBagModal()" style="margin-left: 10px;">Cancel</button>
+            </form>
+        </div>
+    </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAosZ98kbQPTtCf_P6U71gmUa-zfyx0p0A",
-            authDomain: "remade-studio.firebaseapp.com",
-            projectId: "remade-studio",
-            storageBucket: "remade-studio.firebasestorage.app",
-            messagingSenderId: "890904163393",
-            appId: "1:890904163393:web:75ee8d452ba293e94ac2c0"
+    <!-- EDIT COLLECTION MODAL -->
+    <div id="editCollModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEditCollModal()">&times;</button>
+            <div class="modal-header">Edit Collection</div>
+            <form id="editCollForm">
+                <input type="hidden" id="editCollId">
+                
+                <div class="form-group">
+                    <label>Collection Name *</label>
+                    <input type="text" id="editCollName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editCollDesc" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Creation Date</label>
+                    <input type="date" id="editCollDate">
+                </div>
+                
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <button type="button" class="btn-secondary" onclick="closeEditCollModal()" style="margin-left: 10px;">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DATA STORAGE
+        let data = {
+            bags: [],
+            collections: []
         };
 
-        console.log('Initializing Firebase...');
-        
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-            document.getElementById('fbStatus').textContent = '✓ Connected';
-            console.log('Firebase initialized successfully');
-            loadBags();
-        } catch (e) {
-            console.error('Firebase error:', e);
-            document.getElementById('fbStatus').textContent = '✗ Error: ' + e.message;
-        }
+        const STORAGE_KEY = 'remade_tracker_data';
 
-        async function loadBags() {
-            try {
-                const snapshot = await db.collection('bags').get();
-                const bags = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                const bagsList = document.getElementById('bagsList');
-                if (bags.length > 0) {
-                    bagsList.innerHTML = bags.map(b => `
-                        <div class="bag-item">
-                            <strong>${b.name}</strong>
-                            <p style="margin-top: 5px; color: #A7AE98; font-size: 13px;">${b.description || 'No description'}</p>
-                        </div>
-                    `).join('');
-                } else {
-                    bagsList.innerHTML = '<p style="color: #A7AE98;">No bags yet. Create one to get started!</p>';
-                }
-            } catch (err) {
-                console.error('Load error:', err);
-                document.getElementById('bagsList').innerHTML = '<p style="color: red;">Error: ' + err.message + '</p>';
-            }
-        }
-
-        document.getElementById('bagForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // INIT
+        function init() {
+            loadData();
+            document.getElementById('bagDate').valueAsDate = new Date();
+            document.getElementById('collDate').valueAsDate = new Date();
+            document.getElementById('editBagDate').valueAsDate = new Date();
+            document.getElementById('editCollDate').valueAsDate = new Date();
+            updateUI();
             
-            try {
-                const bag = {
-                    name: document.getElementById('bagName').value,
-                    description: document.getElementById('bagDesc').value,
-                    created: new Date()
-                };
+            document.getElementById('bagForm').addEventListener('submit', saveBag);
+            document.getElementById('collForm').addEventListener('submit', saveColl);
+            document.getElementById('editBagForm').addEventListener('submit', updateBag);
+            document.getElementById('editCollForm').addEventListener('submit', updateColl);
+        }
 
-                console.log('Saving bag:', bag);
-                const docRef = await db.collection('bags').add(bag);
-                console.log('Bag saved with ID:', docRef.id);
-
-                showMsg('✓ Bag created!', 'success');
-                this.reset();
-                await loadBags();
-            } catch (err) {
-                console.error('Save error:', err);
-                showMsg('✗ Error: ' + err.message, 'error');
+        // STORAGE
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                data = JSON.parse(saved);
             }
-        });
+        }
 
-        function showMsg(text, type) {
-            const msg = document.getElementById('msg');
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateUI();
+        }
+
+        // UI
+        function updateUI() {
+            // Stats
+            document.getElementById('totalBags').textContent = data.bags.length;
+            document.getElementById('totalColls').textContent = data.collections.length;
+            
+            const totalHours = data.bags.reduce((sum, b) => sum + (b.hours || 0), 0);
+            document.getElementById('totalHours').textContent = totalHours.toFixed(1);
+            
+            const totalExp = data.bags.reduce((sum, b) => sum + (b.expenses || 0), 0);
+            document.getElementById('totalExpenses').textContent = totalExp.toFixed(2);
+
+            // Collection selects
+            const selects = document.querySelectorAll('select[id*="bagColl"], select[id*="editBagColl"]');
+            selects.forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">No Collection</option>';
+                data.collections.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = c.name;
+                    select.appendChild(opt);
+                });
+                select.value = currentValue;
+            });
+
+            // Overview section
+            updateOverview();
+        }
+
+        function updateOverview() {
+            // All bags
+            const allBags = document.getElementById('allBags');
+            if (data.bags.length > 0) {
+                let html = '';
+                data.bags.forEach(bag => {
+                    const coll = data.collections.find(c => c.id === bag.collection);
+                    html += `
+                        <div class="item-card">
+                            <div class="item-info">
+                                <div class="item-name">${bag.name}</div>
+                                <div class="item-meta">
+                                    <strong>Status:</strong> ${bag.status}<br>
+                                    <strong>Hours:</strong> ${(bag.hours || 0).toFixed(1)}h<br>
+                                    <strong>Expenses:</strong> €${(bag.expenses || 0).toFixed(2)}<br>
+                                    ${coll ? `<strong>Collection:</strong> ${coll.name}<br>` : ''}
+                                    ${bag.materials ? `<strong>Materials:</strong> ${bag.materials}<br>` : ''}
+                                    ${bag.description ? `<strong>Notes:</strong> ${bag.description}` : ''}
+                                </div>
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn-edit" onclick="openEditBagModal('${bag.id}')">Edit</button>
+                                <button class="btn-delete" onclick="deleteBag('${bag.id}')">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                allBags.innerHTML = html;
+            } else {
+                allBags.innerHTML = '<div class="empty-state"><p>No bags yet. Create one to get started!</p></div>';
+            }
+
+            // All collections
+            const allColls = document.getElementById('allColls');
+            if (data.collections.length > 0) {
+                let html = '';
+                data.collections.forEach(coll => {
+                    const bagsInColl = data.bags.filter(b => b.collection === coll.id);
+                    const collExpenses = bagsInColl.reduce((sum, b) => sum + (b.expenses || 0), 0);
+                    const collHours = bagsInColl.reduce((sum, b) => sum + (b.hours || 0), 0);
+                    
+                    html += `
+                        <div class="item-card">
+                            <div class="item-info">
+                                <div class="item-name">${coll.name}</div>
+                                <div class="item-meta">
+                                    <strong>Bags:</strong> ${bagsInColl.length}<br>
+                                    <strong>Total Hours:</strong> ${collHours.toFixed(1)}h<br>
+                                    <strong>Total Expenses:</strong> €${collExpenses.toFixed(2)}<br>
+                                    ${coll.description ? `<strong>Description:</strong> ${coll.description}` : ''}
+                                </div>
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn-edit" onclick="openEditCollModal('${coll.id}')">Edit</button>
+                                <button class="btn-delete" onclick="deleteColl('${coll.id}')">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                allColls.innerHTML = html;
+            } else {
+                allColls.innerHTML = '<div class="empty-state"><p>No collections yet.</p></div>';
+            }
+        }
+
+        // NAVIGATION
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // BAGS
+        function saveBag(e) {
+            e.preventDefault();
+            const bag = {
+                id: Date.now().toString(),
+                name: document.getElementById('bagName').value,
+                collection: document.getElementById('bagColl').value || null,
+                date: document.getElementById('bagDate').value,
+                status: document.getElementById('bagStatus').value,
+                hours: parseFloat(document.getElementById('bagHours').value) || 0,
+                expenses: parseFloat(document.getElementById('bagExpenses').value) || 0,
+                materials: document.getElementById('bagMaterials').value,
+                description: document.getElementById('bagDesc').value
+            };
+            
+            data.bags.push(bag);
+            saveData();
+            showMessage('✓ Bag created!', 'success');
+            document.getElementById('bagForm').reset();
+            showSection('dashboard');
+        }
+
+        function openEditBagModal(bagId) {
+            const bag = data.bags.find(b => b.id === bagId);
+            if (!bag) return;
+            
+            document.getElementById('editBagId').value = bag.id;
+            document.getElementById('editBagName').value = bag.name;
+            document.getElementById('editBagColl').value = bag.collection || '';
+            document.getElementById('editBagDate').value = bag.date || '';
+            document.getElementById('editBagStatus').value = bag.status;
+            document.getElementById('editBagHours').value = bag.hours;
+            document.getElementById('editBagExpenses').value = bag.expenses;
+            document.getElementById('editBagMaterials').value = bag.materials || '';
+            document.getElementById('editBagDesc').value = bag.description || '';
+            
+            document.getElementById('editBagModal').classList.add('active');
+        }
+
+        function closeEditBagModal() {
+            document.getElementById('editBagModal').classList.remove('active');
+        }
+
+        function updateBag(e) {
+            e.preventDefault();
+            const bagId = document.getElementById('editBagId').value;
+            const bag = data.bags.find(b => b.id === bagId);
+            
+            if (bag) {
+                bag.name = document.getElementById('editBagName').value;
+                bag.collection = document.getElementById('editBagColl').value || null;
+                bag.date = document.getElementById('editBagDate').value;
+                bag.status = document.getElementById('editBagStatus').value;
+                bag.hours = parseFloat(document.getElementById('editBagHours').value) || 0;
+                bag.expenses = parseFloat(document.getElementById('editBagExpenses').value) || 0;
+                bag.materials = document.getElementById('editBagMaterials').value;
+                bag.description = document.getElementById('editBagDesc').value;
+                
+                saveData();
+                showMessage('✓ Bag updated!', 'success');
+                closeEditBagModal();
+                showSection('overview');
+            }
+        }
+
+        function deleteBag(bagId) {
+            if (confirm('Are you sure you want to delete this bag?')) {
+                data.bags = data.bags.filter(b => b.id !== bagId);
+                saveData();
+                showMessage('✓ Bag deleted!', 'success');
+            }
+        }
+
+        // COLLECTIONS
+        function saveColl(e) {
+            e.preventDefault();
+            const coll = {
+                id: Date.now().toString(),
+                name: document.getElementById('collName').value,
+                description: document.getElementById('collDesc').value,
+                date: document.getElementById('collDate').value
+            };
+            
+            data.collections.push(coll);
+            saveData();
+            showMessage('✓ Collection created!', 'success');
+            document.getElementById('collForm').reset();
+            showSection('dashboard');
+        }
+
+        function openEditCollModal(collId) {
+            const coll = data.collections.find(c => c.id === collId);
+            if (!coll) return;
+            
+            document.getElementById('editCollId').value = coll.id;
+            document.getElementById('editCollName').value = coll.name;
+            document.getElementById('editCollDesc').value = coll.description || '';
+            document.getElementById('editCollDate').value = coll.date || '';
+            
+            document.getElementById('editCollModal').classList.add('active');
+        }
+
+        function closeEditCollModal() {
+            document.getElementById('editCollModal').classList.remove('active');
+        }
+
+        function updateColl(e) {
+            e.preventDefault();
+            const collId = document.getElementById('editCollId').value;
+            const coll = data.collections.find(c => c.id === collId);
+            
+            if (coll) {
+                coll.name = document.getElementById('editCollName').value;
+                coll.description = document.getElementById('editCollDesc').value;
+                coll.date = document.getElementById('editCollDate').value;
+                
+                saveData();
+                showMessage('✓ Collection updated!', 'success');
+                closeEditCollModal();
+                showSection('overview');
+            }
+        }
+
+        function deleteColl(collId) {
+            if (confirm('Are you sure you want to delete this collection?')) {
+                data.collections = data.collections.filter(c => c.id !== collId);
+                data.bags.forEach(b => {
+                    if (b.collection === collId) b.collection = null;
+                });
+                saveData();
+                showMessage('✓ Collection deleted!', 'success');
+            }
+        }
+
+        // MESSAGES
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
             msg.innerHTML = `<div class="message ${type}">${text}</div>`;
             setTimeout(() => msg.innerHTML = '', 3000);
         }
+
+        // START
+        init();
     </script>
 </body>
 </html>
