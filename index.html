@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReMade Tracker - Activity & Money</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-btn:hover {
+            background: white;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #ddd;
+            color: #333;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .entries-list {
+            margin-top: 20px;
+        }
+
+        .entry {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .entry-content {
+            flex: 1;
+        }
+
+        .entry-date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .entry-title {
+            font-weight: 500;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .entry-details {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .entry-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 30px 0;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 30px 0 15px 0;
+            color: #333;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 22px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                flex: 1;
+                min-width: 80px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .entry {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .entry-actions {
+                margin-top: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 ReMade Tracker</h1>
+            <p>Track your activity & money — old fabric, new life</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('log')">📝 Log</button>
+            <button class="tab-btn" onclick="switchTab('stats')">📈 Stats</button>
+            <button class="tab-btn" onclick="switchTab('reports')">📋 Reports</button>
+            <button class="tab-btn" onclick="switchTab('data')">💾 Data</button>
+        </div>
+
+        <div class="content">
+            <!-- LOG TAB -->
+            <div id="log" class="tab-content active">
+                <h2 class="section-title">Log New Entry</h2>
+                <div id="logMessage"></div>
+
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" id="logDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Activity Type *</label>
+                    <select id="logActivity" required>
+                        <option value="">-- Select --</option>
+                        <option value="Sewing">🧵 Sewing</option>
+                        <option value="Cutting">✂️ Cutting fabric</option>
+                        <option value="Design">🎨 Design work</option>
+                        <option value="Destitch">🔄 Destitch fabric</option>
+                        <option value="Photography">📸 Photography</option>
+                        <option value="Marketing">📱 Marketing</option>
+                        <option value="Other">⚙️ Other</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hours Spent</label>
+                        <input type="number" id="logHours" step="0.5" min="0" placeholder="e.g., 2.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Bags Made</label>
+                        <input type="number" id="logBags" step="1" min="0" placeholder="e.g., 1">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Money Spent (EUR)</label>
+                        <input type="number" id="logCostSpent" step="0.01" min="0" placeholder="e.g., 5.50">
+                    </div>
+                    <div class="form-group">
+                        <label>Money Made (EUR)</label>
+                        <input type="number" id="logSalesMade" step="0.01" min="0" placeholder="e.g., 25.00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="logNotes" rows="3" placeholder="Any details..."></textarea>
+                </div>
+
+                <button onclick="logEntry()">Save Entry</button>
+
+                <h2 class="section-title">Recent Entries</h2>
+                <div id="recentEntries"></div>
+            </div>
+
+            <!-- STATS TAB -->
+            <div id="stats" class="tab-content">
+                <h2 class="section-title">Quick Stats</h2>
+                <div class="stats-grid" id="statsGrid"></div>
+
+                <h2 class="section-title">Charts</h2>
+                <div class="chart-container">
+                    <canvas id="activityChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="moneyChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="bagsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- REPORTS TAB -->
+            <div id="reports" class="tab-content">
+                <h2 class="section-title">Detailed Reports</h2>
+
+                <div class="form-group">
+                    <label>Report Type</label>
+                    <select id="reportType" onchange="generateReport()">
+                        <option value="summary">Summary</option>
+                        <option value="weekly">Weekly Breakdown</option>
+                        <option value="activity">Activity by Type</option>
+                        <option value="profitability">Profitability per Bag</option>
+                    </select>
+                </div>
+
+                <div id="reportContent"></div>
+            </div>
+
+            <!-- DATA TAB -->
+            <div id="data" class="tab-content">
+                <h2 class="section-title">Data Management</h2>
+                <p style="color: #666; margin-bottom: 15px;">Export, import, or clear your data.</p>
+
+                <div style="background: #f0f0f0; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                    <p style="font-size: 14px; color: #333; margin-bottom: 10px;"><strong>Storage:</strong></p>
+                    <p style="font-size: 13px; color: #666;">This app stores all data in your browser's local storage. Your data stays private and never leaves your device.</p>
+                </div>
+
+                <div class="export-buttons">
+                    <button onclick="exportData()" class="btn-secondary">📥 Export as JSON</button>
+                    <button onclick="exportCSV()" class="btn-secondary">📊 Export as CSV</button>
+                </div>
+
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+                    <h3 style="margin-bottom: 15px; color: #333;">Import Data</h3>
+                    <input type="file" id="importFile" accept=".json">
+                    <button onclick="importData()" class="btn-secondary" style="margin-top: 10px;">📤 Import from JSON</button>
+                </div>
+
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+                    <h3 style="margin-bottom: 15px; color: #333;">Danger Zone</h3>
+                    <button onclick="clearAllData()" class="btn-danger">🗑️ Clear All Data</button>
+                    <p style="font-size: 12px; color: #999; margin-top: 10px;">This cannot be undone. Export your data first!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('logDate').value = today;
+
+        // Load data from localStorage
+        function getData() {
+            const data = localStorage.getItem('remadeTrackerData');
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveData(data) {
+            localStorage.setItem('remadeTrackerData', JSON.stringify(data));
+            updateAllDisplays();
+        }
+
+        // Log entry
+        function logEntry() {
+            const date = document.getElementById('logDate').value;
+            const activity = document.getElementById('logActivity').value;
+            const hours = parseFloat(document.getElementById('logHours').value) || 0;
+            const bags = parseInt(document.getElementById('logBags').value) || 0;
+            const costSpent = parseFloat(document.getElementById('logCostSpent').value) || 0;
+            const salesMade = parseFloat(document.getElementById('logSalesMade').value) || 0;
+            const notes = document.getElementById('logNotes').value;
+
+            if (!date || !activity) {
+                showMessage('logMessage', 'Please fill in date and activity type', 'error');
+                return;
+            }
+
+            const entry = {
+                id: Date.now(),
+                date,
+                activity,
+                hours,
+                bags,
+                costSpent,
+                salesMade,
+                notes,
+                moneyLeft: salesMade - costSpent
+            };
+
+            const data = getData();
+            data.push(entry);
+            saveData(data);
+
+            // Clear form
+            document.getElementById('logActivity').value = '';
+            document.getElementById('logHours').value = '';
+            document.getElementById('logBags').value = '';
+            document.getElementById('logCostSpent').value = '';
+            document.getElementById('logSalesMade').value = '';
+            document.getElementById('logNotes').value = '';
+            document.getElementById('logDate').value = today;
+
+            showMessage('logMessage', '✅ Entry saved!', 'success');
+        }
+
+        // Delete entry
+        function deleteEntry(id) {
+            if (confirm('Delete this entry?')) {
+                let data = getData();
+                data = data.filter(e => e.id !== id);
+                saveData(data);
+            }
+        }
+
+        // Display functions
+        function updateAllDisplays() {
+            displayRecentEntries();
+            updateStats();
+            generateReport();
+        }
+
+        function displayRecentEntries() {
+            const data = getData();
+            const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const container = document.getElementById('recentEntries');
+
+            if (sorted.length === 0) {
+                container.innerHTML = '<p style="color: #999;">No entries yet. Log your first one!</p>';
+                return;
+            }
+
+            container.innerHTML = sorted.slice(0, 10).map(e => `
+                <div class="entry">
+                    <div class="entry-content">
+                        <div class="entry-date">${new Date(e.date).toLocaleDateString()}</div>
+                        <div class="entry-title">${e.activity} ${getActivityEmoji(e.activity)}</div>
+                        <div class="entry-details">
+                            ${e.hours ? `${e.hours}h` : ''}
+                            ${e.bags ? ` • ${e.bags} bag${e.bags !== 1 ? 's' : ''}` : ''}
+                            ${e.costSpent ? ` • Cost: €${e.costSpent.toFixed(2)}` : ''}
+                            ${e.salesMade ? ` • Sales: €${e.salesMade.toFixed(2)}` : ''}
+                        </div>
+                        ${e.notes ? `<div class="entry-details" style="color: #999; margin-top: 5px;">📝 ${e.notes}</div>` : ''}
+                    </div>
+                    <button onclick="deleteEntry(${e.id})" class="btn-small btn-danger">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const data = getData();
+            if (data.length === 0) {
+                document.getElementById('statsGrid').innerHTML = '<p style="color: #999;">No data yet</p>';
+                return;
+            }
+
+            const stats = {
+                totalEntries: data.length,
+                totalHours: data.reduce((s, e) => s + e.hours, 0),
+                totalBags: data.reduce((s, e) => s + e.bags, 0),
+                totalCost: data.reduce((s, e) => s + e.costSpent, 0),
+                totalSales: data.reduce((s, e) => s + e.salesMade, 0)
+            };
+
+            stats.moneyLeft = stats.totalSales - stats.totalCost;
+            stats.costPerBag = stats.totalBags > 0 ? stats.totalCost / stats.totalBags : 0;
+            stats.hoursPerBag = stats.totalBags > 0 ? stats.totalHours / stats.totalBags : 0;
+            stats.profitPerBag = stats.totalBags > 0 ? stats.moneyLeft / stats.totalBags : 0;
+
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Total Bags</div>
+                    <div class="stat-value">${stats.totalBags}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Hours</div>
+                    <div class="stat-value">${stats.totalHours.toFixed(1)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Money Left</div>
+                    <div class="stat-value">€${stats.moneyLeft.toFixed(2)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Cost per Bag</div>
+                    <div class="stat-value">€${stats.costPerBag.toFixed(2)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Hours per Bag</div>
+                    <div class="stat-value">${stats.hoursPerBag.toFixed(1)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Profit per Bag</div>
+                    <div class="stat-value">€${stats.profitPerBag.toFixed(2)}</div>
+                </div>
+            `;
+
+            // Draw charts
+            drawCharts(data, stats);
+        }
+
+        function drawCharts(data, stats) {
+            // Activity types
+            const activityCounts = {};
+            data.forEach(e => {
+                activityCounts[e.activity] = (activityCounts[e.activity] || 0) + 1;
+            });
+
+            const activityCtx = document.getElementById('activityChart');
+            if (window.activityChartInstance) window.activityChartInstance.destroy();
+            window.activityChartInstance = new Chart(activityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(activityCounts),
+                    datasets: [{
+                        data: Object.values(activityCounts),
+                        backgroundColor: [
+                            '#667eea', '#764ba2', '#f093fb', '#4facfe',
+                            '#43e97b', '#fa709a', '#fee140', '#30b0fe'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // Money (sales vs costs)
+            const moneyCtx = document.getElementById('moneyChart');
+            if (window.moneyChartInstance) window.moneyChartInstance.destroy();
+            window.moneyChartInstance = new Chart(moneyCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total Sales', 'Total Costs', 'Money Left'],
+                    datasets: [{
+                        label: 'EUR',
+                        data: [stats.totalSales, stats.totalCost, stats.moneyLeft],
+                        backgroundColor: ['#43e97b', '#fa709a', '#667eea']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true } }
+                }
+            });
+
+            // Bags over time
+            const bagsByDate = {};
+            const sortedData = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+            sortedData.forEach(e => {
+                bagsByDate[e.date] = (bagsByDate[e.date] || 0) + e.bags;
+            });
+
+            const bagsCtx = document.getElementById('bagsChart');
+            if (window.bagsChartInstance) window.bagsChartInstance.destroy();
+            window.bagsChartInstance = new Chart(bagsCtx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(bagsByDate),
+                    datasets: [{
+                        label: 'Bags Made',
+                        data: Object.values(bagsByDate),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true } }
+                }
+            });
+        }
+
+        function generateReport() {
+            const type = document.getElementById('reportType').value;
+            const data = getData();
+            const container = document.getElementById('reportContent');
+
+            if (data.length === 0) {
+                container.innerHTML = '<p style="color: #999;">No data to report</p>';
+                return;
+            }
+
+            let html = '';
+
+            if (type === 'summary') {
+                const stats = {
+                    totalEntries: data.length,
+                    totalHours: data.reduce((s, e) => s + e.hours, 0),
+                    totalBags: data.reduce((s, e) => s + e.bags, 0),
+                    totalCost: data.reduce((s, e) => s + e.costSpent, 0),
+                    totalSales: data.reduce((s, e) => s + e.salesMade, 0)
+                };
+                stats.moneyLeft = stats.totalSales - stats.totalCost;
+
+                html = `
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                        <tr style="background: #f5f5f5;">
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Metric</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Value</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Log Entries</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">${stats.totalEntries}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Total Bags Made</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">${stats.totalBags}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Total Hours</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">${stats.totalHours.toFixed(1)}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Total Sales (EUR)</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">€${stats.totalSales.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Total Costs (EUR)</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">€${stats.totalCost.toFixed(2)}</td>
+                        </tr>
+                        <tr style="background: #d4edda;">
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Money Left (EUR)</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>€${stats.moneyLeft.toFixed(2)}</strong></td>
+                        </tr>
+                    </table>
+                `;
+            } else if (type === 'weekly') {
+                const weeks = {};
+                data.forEach(e => {
+                    const date = new Date(e.date);
+                    const weekNum = getWeekNumber(date);
+                    if (!weeks[weekNum]) weeks[weekNum] = { bags: 0, hours: 0, cost: 0, sales: 0 };
+                    weeks[weekNum].bags += e.bags;
+                    weeks[weekNum].hours += e.hours;
+                    weeks[weekNum].cost += e.costSpent;
+                    weeks[weekNum].sales += e.salesMade;
+                });
+
+                html = '<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">';
+                html += '<tr style="background: #f5f5f5;"><td style="padding: 10px; border: 1px solid #ddd;"><strong>Week</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Bags</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Hours</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Cost</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Sales</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Left</strong></td></tr>';
+                Object.entries(weeks).forEach(([week, w]) => {
+                    html += `<tr><td style="padding: 10px; border: 1px solid #ddd;">Week ${week}</td><td style="padding: 10px; border: 1px solid #ddd;">${w.bags}</td><td style="padding: 10px; border: 1px solid #ddd;">${w.hours.toFixed(1)}</td><td style="padding: 10px; border: 1px solid #ddd;">€${w.cost.toFixed(2)}</td><td style="padding: 10px; border: 1px solid #ddd;">€${w.sales.toFixed(2)}</td><td style="padding: 10px; border: 1px solid #ddd;">€${(w.sales - w.cost).toFixed(2)}</td></tr>`;
+                });
+                html += '</table>';
+            } else if (type === 'activity') {
+                const activities = {};
+                data.forEach(e => {
+                    if (!activities[e.activity]) activities[e.activity] = { count: 0, hours: 0, bags: 0 };
+                    activities[e.activity].count += 1;
+                    activities[e.activity].hours += e.hours;
+                    activities[e.activity].bags += e.bags;
+                });
+
+                html = '<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">';
+                html += '<tr style="background: #f5f5f5;"><td style="padding: 10px; border: 1px solid #ddd;"><strong>Activity</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Count</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Hours</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Bags</strong></td></tr>';
+                Object.entries(activities).forEach(([activity, a]) => {
+                    html += `<tr><td style="padding: 10px; border: 1px solid #ddd;">${activity}</td><td style="padding: 10px; border: 1px solid #ddd;">${a.count}</td><td style="padding: 10px; border: 1px solid #ddd;">${a.hours.toFixed(1)}</td><td style="padding: 10px; border: 1px solid #ddd;">${a.bags}</td></tr>`;
+                });
+                html += '</table>';
+            } else if (type === 'profitability') {
+                const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+                html = '<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">';
+                html += '<tr style="background: #f5f5f5;"><td style="padding: 10px; border: 1px solid #ddd;"><strong>Date</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Activity</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Bags</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Cost</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Sales</strong></td><td style="padding: 10px; border: 1px solid #ddd;"><strong>Profit</strong></td></tr>';
+                sorted.forEach(e => {
+                    const profit = e.salesMade - e.costSpent;
+                    const color = profit > 0 ? '#d4edda' : profit < 0 ? '#f8d7da' : '';
+                    html += `<tr style="background: ${color}"><td style="padding: 10px; border: 1px solid #ddd;">${new Date(e.date).toLocaleDateString()}</td><td style="padding: 10px; border: 1px solid #ddd;">${e.activity}</td><td style="padding: 10px; border: 1px solid #ddd;">${e.bags}</td><td style="padding: 10px; border: 1px solid #ddd;">€${e.costSpent.toFixed(2)}</td><td style="padding: 10px; border: 1px solid #ddd;">€${e.salesMade.toFixed(2)}</td><td style="padding: 10px; border: 1px solid #ddd;">€${profit.toFixed(2)}</td></tr>`;
+                });
+                html += '</table>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Helpers
+        function getActivityEmoji(activity) {
+            const emojis = {
+                'Sewing': '🧵',
+                'Cutting': '✂️',
+                'Design': '🎨',
+                'Destitch': '🔄',
+                'Photography': '📸',
+                'Marketing': '📱'
+            };
+            return emojis[activity] || '⚙️';
+        }
+
+        function getWeekNumber(date) {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showMessage(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = `<div class="message ${type}">${message}</div>`;
+            if (type === 'success') setTimeout(() => el.innerHTML = '', 3000);
+        }
+
+        function exportData() {
+            const data = getData();
+            const json = JSON.stringify(data, null, 2);
+            downloadFile(json, 'remade-data.json', 'application/json');
+        }
+
+        function exportCSV() {
+            const data = getData();
+            let csv = 'Date,Activity,Hours,Bags,Cost (EUR),Sales (EUR),Money Left (EUR),Notes\n';
+            data.forEach(e => {
+                csv += `"${e.date}","${e.activity}",${e.hours},${e.bags},${e.costSpent},${e.salesMade},${e.moneyLeft},"${e.notes}"\n`;
+            });
+            downloadFile(csv, 'remade-data.csv', 'text/csv');
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        function importData() {
+            const file = document.getElementById('importFile').files[0];
+            if (!file) {
+                showMessage('reportContent', 'Please select a file', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (Array.isArray(data)) {
+                        localStorage.setItem('remadeTrackerData', JSON.stringify(data));
+                        updateAllDisplays();
+                        showMessage('reportContent', '✅ Data imported!', 'success');
+                        document.getElementById('importFile').value = '';
+                    }
+                } catch (err) {
+                    showMessage('reportContent', 'Invalid file format', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearAllData() {
+            if (confirm('Are you SURE? This cannot be undone!')) {
+                if (confirm('Really? Your data will be gone forever!')) {
+                    localStorage.removeItem('remadeTrackerData');
+                    updateAllDisplays();
+                    showMessage('reportContent', 'All data cleared', 'success');
+                }
+            }
+        }
+
+        // Initial load
+        updateAllDisplays();
+    </script>
+</body>
+</html>
