@@ -3,294 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReMade Studio — Creative Production Management</title>
+    <title>ReMade Studio</title>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --forest-green: #193D30;
-            --cream: #F5F0E6;
-            --sage: #A7AE98;
-            --beige: #DCD2C2;
-            --charcoal: #30332E;
-            --white: #FFFFFF;
-            --light-bg: #FAFAF8;
-            --border: #E8E4D8;
-        }
-        body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--charcoal); }
-        h1, h2, h3, h4 { font-family: 'Crimson Text', serif; font-weight: 600; }
-        .app-wrapper { display: flex; min-height: 100vh; }
-        .sidebar {
-            width: 280px; background: var(--white); border-right: 1px solid var(--border);
-            padding: 40px 25px; position: fixed; height: 100vh; overflow-y: auto; display: flex; flex-direction: column;
-        }
-        .sidebar-header { margin-bottom: 50px; }
-        .sidebar-logo { font-family: 'Crimson Text', serif; font-size: 28px; font-weight: 600; color: var(--forest-green); }
-        .sidebar-tagline { font-size: 11px; color: var(--sage); text-transform: uppercase; letter-spacing: 1.5px; }
-        .nav-list { list-style: none; flex: 1; }
-        .nav-item { margin-bottom: 8px; }
-        .nav-link {
-            display: block; padding: 12px 15px; font-size: 13px; color: var(--charcoal);
-            text-decoration: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s;
-        }
-        .nav-link:hover { background: var(--light-bg); color: var(--forest-green); }
-        .nav-link.active { background: var(--forest-green); color: var(--white); }
-        .main-area { margin-left: 280px; flex: 1; background: var(--cream); padding: 50px; }
-        .page-header { margin-bottom: 50px; }
-        .page-title { font-size: 42px; font-weight: 600; color: var(--charcoal); margin-bottom: 8px; }
-        .page-subtitle { font-size: 14px; color: var(--sage); }
-        .page { display: none; }
-        .page.active { display: block; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 50px; }
-        .stat-card {
-            background: var(--white); padding: 25px; border: 1px solid var(--border);
-            border-radius: 10px; transition: all 0.3s;
-        }
-        .stat-card:hover { border-color: var(--sage); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .stat-label { font-size: 11px; color: var(--sage); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 12px; }
-        .stat-value { font-family: 'Crimson Text', serif; font-size: 32px; font-weight: 600; color: var(--forest-green); }
-        .card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 30px; margin-bottom: 30px; }
-        .card-title { font-family: 'Crimson Text', serif; font-size: 22px; font-weight: 600; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
-        .form-group { margin-bottom: 22px; }
-        label { display: block; font-size: 12px; font-weight: 600; color: var(--charcoal); margin-bottom: 8px; text-transform: uppercase; }
-        input, select, textarea {
-            width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px;
-            font-family: 'Inter', sans-serif; font-size: 14px; color: var(--charcoal);
-        }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--forest-green); box-shadow: 0 0 0 3px rgba(25,61,48,0.08); }
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        button {
-            padding: 12px 24px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
-            border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
-        }
-        .btn-primary { background: var(--forest-green); color: var(--white); }
-        .btn-primary:hover { background: #0F2A22; }
-        .btn-secondary { background: var(--light-bg); color: var(--charcoal); border: 1px solid var(--border); }
-        .btn-small { padding: 6px 12px; font-size: 11px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); font-size: 11px; font-weight: 700; color: var(--forest-green); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 1000; align-items: center; justify-content: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: white; padding: 40px; border-radius: 12px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
-        .modal-header { font-family: 'Crimson Text', serif; font-size: 28px; font-weight: 600; margin-bottom: 25px; color: var(--charcoal); }
-        .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--sage); }
-        .message { padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; border-left: 4px solid; }
-        .message.success { background: #F0F7F4; color: #6B9A7E; border-color: #6B9A7E; }
-        @media (max-width: 768px) {
-            .sidebar { width: 100%; height: auto; position: static; flex-direction: row; }
-            .main-area { margin-left: 0; padding: 20px; }
-            .page-title { font-size: 28px; }
-        }
+        body { font-family: 'Inter', sans-serif; background: #F5F0E6; color: #30332E; padding: 40px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { font-family: 'Crimson Text', serif; font-size: 42px; color: #193D30; margin-bottom: 30px; }
+        .card { background: white; padding: 30px; border: 1px solid #E8E4D8; border-radius: 10px; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; font-size: 11px; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #E8E4D8; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; }
+        button { background: #193D30; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-transform: uppercase; font-size: 13px; }
+        button:hover { background: #0F2A22; }
+        .bag-item { background: #FAFAF8; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #193D30; }
+        .bag-item strong { color: #193D30; }
+        .message { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
+        .message.success { background: #F0F7F4; color: #6B9A7E; border: 1px solid #6B9A7E; }
+        .message.error { background: #FDF1ED; color: #C65D47; border: 1px solid #C65D47; }
+        .status { font-size: 12px; color: #A7AE98; padding: 10px; background: #FAFAF8; border-radius: 6px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-    <div class="app-wrapper">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo">ReMade</div>
-                <div class="sidebar-tagline">Studio</div>
-            </div>
-            <nav>
-                <ul class="nav-list">
-                    <li class="nav-item"><a class="nav-link active" onclick="switchPage('overview')">Overview</a></li>
-                    <li class="nav-item"><a class="nav-link" onclick="switchPage('production')">Production Log</a></li>
-                    <li class="nav-item"><a class="nav-link" onclick="switchPage('bags')">My Bags</a></li>
-                    <li class="nav-item"><a class="nav-link" onclick="switchPage('collections')">Collections</a></li>
-                    <li class="nav-item"><a class="nav-link" onclick="switchPage('design')">Design Lab</a></li>
-                    <li class="nav-item"><a class="nav-link" onclick="switchPage('journal')">Creative Journal</a></li>
-                    <li class="nav-item"><a class="nav-link" onclick="switchPage('inventory')">Materials</a></li>
-                    <li class="nav-item"><a class="nav-link" onclick="switchPage('analytics')">Analytics</a></li>
-                    <li class="nav-item"><a class="nav-link" onclick="switchPage('financial')">Financial</a></li>
-                    <li class="nav-item"><a class="nav-link" onclick="switchPage('reports')">Reports</a></li>
-                    <li class="nav-item"><a class="nav-link" onclick="switchPage('settings')">Settings</a></li>
-                </ul>
-            </nav>
+    <div class="container">
+        <h1>ReMade Studio</h1>
+        
+        <div class="status">
+            Firebase Status: <span id="fbStatus">Initializing...</span>
         </div>
 
-        <div class="main-area">
-            <!-- OVERVIEW -->
-            <div id="overview" class="page active">
-                <div class="page-header">
-                    <div class="page-title">Welcome back to your studio.</div>
-                    <div class="page-subtitle">Every piece has a story. Here's what you've been creating.</div>
-                </div>
+        <div id="msg"></div>
 
-                <div id="msg"></div>
-
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-label">Total Bags</div><div class="stat-value" id="s1">0</div></div>
-                    <div class="stat-card"><div class="stat-label">Collections</div><div class="stat-value" id="s2">0</div></div>
-                    <div class="stat-card"><div class="stat-label">Production Hours</div><div class="stat-value"><span id="s3">0</span>h</div></div>
-                    <div class="stat-card"><div class="stat-label">Total Expenses</div><div class="stat-value">€<span id="s4">0.00</span></div></div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Quick Actions</div>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn-primary" onclick="openBagModal()">+ Create New Bag</button>
-                        <button class="btn-secondary" onclick="openCollModal()">+ Create Collection</button>
-                        <button class="btn-secondary" onclick="switchPage('production')">+ Log Production</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BAGS -->
-            <div id="bags" class="page">
-                <div class="page-header">
-                    <div class="page-title">My Bags</div>
-                    <div class="page-subtitle">Individual bag profiles</div>
-                </div>
-                <button class="btn-primary" style="margin-bottom: 30px;" onclick="openBagModal()">+ Create New Bag</button>
-                <div id="bagsList"></div>
-            </div>
-
-            <!-- COLLECTIONS -->
-            <div id="collections" class="page">
-                <div class="page-header">
-                    <div class="page-title">Collections</div>
-                    <div class="page-subtitle">Organize your bags</div>
-                </div>
-                <button class="btn-primary" style="margin-bottom: 30px;" onclick="openCollModal()">+ Create Collection</button>
-                <div id="collList"></div>
-            </div>
-
-            <!-- PRODUCTION -->
-            <div id="production" class="page">
-                <div class="page-header">
-                    <div class="page-title">Production Log</div>
-                    <div class="page-subtitle">Track your work</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">New Entry</div>
-                    <form id="prodForm">
-                        <div class="form-row">
-                            <div class="form-group"><label>Date</label><input type="date" id="pDate" required></div>
-                            <div class="form-group"><label>Bag</label><select id="pBag" required><option>Select a bag</option></select></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label>Hours</label><input type="number" id="pHours" min="0" step="0.5" required></div>
-                            <div class="form-group"><label>Activity</label><select id="pActivity" required><option>Sewing</option><option>Cutting</option><option>Designing</option><option>Other</option></select></div>
-                        </div>
-                        <button type="submit" class="btn-primary">Save</button>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="card-title">History</div>
-                    <div id="prodList"></div>
-                </div>
-            </div>
-
-            <!-- DESIGN LAB -->
-            <div id="design" class="page">
-                <div class="page-header"><div class="page-title">Design Lab</div></div>
-                <div class="card"><p style="color: var(--sage);">Coming soon</p></div>
-            </div>
-
-            <!-- JOURNAL -->
-            <div id="journal" class="page">
-                <div class="page-header"><div class="page-title">Creative Journal</div></div>
-                <div class="card"><p style="color: var(--sage);">Coming soon</p></div>
-            </div>
-
-            <!-- INVENTORY -->
-            <div id="inventory" class="page">
-                <div class="page-header"><div class="page-title">Materials</div></div>
-                <div class="card"><p style="color: var(--sage);">Coming soon</p></div>
-            </div>
-
-            <!-- ANALYTICS -->
-            <div id="analytics" class="page">
-                <div class="page-header"><div class="page-title">Analytics</div></div>
-                <div class="card"><p style="color: var(--sage);">Coming soon</p></div>
-            </div>
-
-            <!-- FINANCIAL -->
-            <div id="financial" class="page">
-                <div class="page-header"><div class="page-title">Financial</div></div>
-                <div class="card"><p style="color: var(--sage);">Coming soon</p></div>
-            </div>
-
-            <!-- REPORTS -->
-            <div id="reports" class="page">
-                <div class="page-header"><div class="page-title">Reports</div></div>
-                <div class="card"><p style="color: var(--sage);">Coming soon</p></div>
-            </div>
-
-            <!-- SETTINGS -->
-            <div id="settings" class="page">
-                <div class="page-header"><div class="page-title">Settings</div></div>
-                <div class="card"><p style="color: var(--sage);">Coming soon</p></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- BAG MODAL -->
-    <div id="bagModal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeBagModal()">&times;</button>
-            <div class="modal-header">Create New Bag</div>
-            <form id="bagForm" onsubmit="saveBag(event)">
+        <div class="card">
+            <h2 style="font-family: 'Crimson Text', serif; font-size: 24px; margin-bottom: 20px;">Create New Bag</h2>
+            <form id="bagForm">
                 <div class="form-group">
                     <label>Bag Name *</label>
                     <input type="text" id="bagName" required>
                 </div>
                 <div class="form-group">
-                    <label>Collection</label>
-                    <select id="bagColl">
-                        <option value="">None</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Start Date</label>
-                        <input type="date" id="bagStart">
-                    </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select id="bagStatus">
-                            <option>Planned</option>
-                            <option>In Progress</option>
-                            <option>Completed</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
                     <label>Description</label>
-                    <textarea id="bagDesc"></textarea>
+                    <textarea id="bagDesc" rows="3"></textarea>
                 </div>
-                <button type="submit" class="btn-primary">Create Bag</button>
+                <button type="submit">Create Bag</button>
             </form>
+        </div>
+
+        <div class="card">
+            <h2 style="font-family: 'Crimson Text', serif; font-size: 24px; margin-bottom: 20px;">My Bags</h2>
+            <div id="bagsList">Loading...</div>
         </div>
     </div>
 
-    <!-- COLLECTION MODAL -->
-    <div id="collModal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeCollModal()">&times;</button>
-            <div class="modal-header">Create Collection</div>
-            <form id="collForm" onsubmit="saveColl(event)">
-                <div class="form-group">
-                    <label>Collection Name *</label>
-                    <input type="text" id="collName" required>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="collDesc"></textarea>
-                </div>
-                <button type="submit" class="btn-primary">Create</button>
-            </form>
-        </div>
-    </div>
-
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    
     <script>
-        // FIREBASE
         let db = null;
-        
+
         const firebaseConfig = {
             apiKey: "AIzaSyAosZ98kbQPTtCf_P6U71gmUa-zfyx0p0A",
             authDomain: "remade-studio.firebaseapp.com",
@@ -299,205 +69,70 @@
             messagingSenderId: "890904163393",
             appId: "1:890904163393:web:75ee8d452ba293e94ac2c0"
         };
+
+        console.log('Initializing Firebase...');
         
         try {
             firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
+            document.getElementById('fbStatus').textContent = '✓ Connected';
+            console.log('Firebase initialized successfully');
+            loadBags();
         } catch (e) {
-            console.error('Firebase init error:', e);
+            console.error('Firebase error:', e);
+            document.getElementById('fbStatus').textContent = '✗ Error: ' + e.message;
         }
 
-        const app = { bags: [], collections: [], productions: [] };
-
-        // INIT
-        async function init() {
-            document.getElementById('pDate').valueAsDate = new Date();
-            await loadData();
-        }
-
-        // LOAD DATA
-        async function loadData() {
+        async function loadBags() {
             try {
-                const bagsSnap = await db.collection('bags').get();
-                app.bags = bagsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                const collSnap = await db.collection('collections').get();
-                app.collections = collSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                const prodSnap = await db.collection('productions').get();
-                app.productions = prodSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                updateUI();
+                const snapshot = await db.collection('bags').get();
+                const bags = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                const bagsList = document.getElementById('bagsList');
+                if (bags.length > 0) {
+                    bagsList.innerHTML = bags.map(b => `
+                        <div class="bag-item">
+                            <strong>${b.name}</strong>
+                            <p style="margin-top: 5px; color: #A7AE98; font-size: 13px;">${b.description || 'No description'}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    bagsList.innerHTML = '<p style="color: #A7AE98;">No bags yet. Create one to get started!</p>';
+                }
             } catch (err) {
                 console.error('Load error:', err);
-                showMsg('Error loading data', 'error');
+                document.getElementById('bagsList').innerHTML = '<p style="color: red;">Error: ' + err.message + '</p>';
             }
         }
 
-        // SAVE BAG
-        async function saveBag(e) {
+        document.getElementById('bagForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
             try {
                 const bag = {
                     name: document.getElementById('bagName').value,
-                    collection: document.getElementById('bagColl').value || null,
-                    startDate: document.getElementById('bagStart').value,
-                    status: document.getElementById('bagStatus').value,
                     description: document.getElementById('bagDesc').value,
-                    hours: 0,
-                    sessions: 0,
-                    matCost: 0,
-                    addCost: 0,
-                    sales: 0,
                     created: new Date()
                 };
 
+                console.log('Saving bag:', bag);
                 const docRef = await db.collection('bags').add(bag);
-                app.bags.push({ id: docRef.id, ...bag });
+                console.log('Bag saved with ID:', docRef.id);
 
-                closeBagModal();
-                document.getElementById('bagForm').reset();
-                showMsg('Bag created!', 'success');
-                updateUI();
+                showMsg('✓ Bag created!', 'success');
+                this.reset();
+                await loadBags();
             } catch (err) {
                 console.error('Save error:', err);
-                showMsg('Error saving bag: ' + err.message, 'error');
+                showMsg('✗ Error: ' + err.message, 'error');
             }
-        }
+        });
 
-        // SAVE COLLECTION
-        async function saveColl(e) {
-            e.preventDefault();
-            try {
-                const coll = {
-                    name: document.getElementById('collName').value,
-                    description: document.getElementById('collDesc').value,
-                    created: new Date()
-                };
-
-                const docRef = await db.collection('collections').add(coll);
-                app.collections.push({ id: docRef.id, ...coll });
-
-                closeCollModal();
-                document.getElementById('collForm').reset();
-                showMsg('Collection created!', 'success');
-                updateUI();
-            } catch (err) {
-                console.error('Save error:', err);
-                showMsg('Error saving collection: ' + err.message, 'error');
-            }
-        }
-
-        // UPDATE UI
-        function updateUI() {
-            document.getElementById('s1').textContent = app.bags.length;
-            document.getElementById('s2').textContent = app.collections.length;
-            const hours = app.productions.reduce((s, p) => s + (p.hours || 0), 0);
-            document.getElementById('s3').textContent = hours.toFixed(1);
-            const cost = app.bags.reduce((s, b) => s + (b.matCost || 0) + (b.addCost || 0), 0);
-            document.getElementById('s4').textContent = cost.toFixed(2);
-
-            // Bags list
-            const bagsList = document.getElementById('bagsList');
-            if (app.bags.length > 0) {
-                bagsList.innerHTML = app.bags.map(b => `
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                            <h3 style="font-family: 'Crimson Text', serif; font-size: 20px; margin: 0;">${b.name}</h3>
-                            <span style="background: var(--light-bg); padding: 6px 12px; border-radius: 20px; font-size: 11px;">${b.status}</span>
-                        </div>
-                        <p style="color: var(--sage); font-size: 13px; margin-bottom: 10px;">${b.description || 'No description'}</p>
-                        <table style="margin: 0;">
-                            <tr><td><strong>Hours:</strong></td><td>${(b.hours || 0).toFixed(1)}h</td></tr>
-                            <tr><td><strong>Material Cost:</strong></td><td>€${(b.matCost || 0).toFixed(2)}</td></tr>
-                            <tr><td><strong>Sales:</strong></td><td>€${(b.sales || 0).toFixed(2)}</td></tr>
-                        </table>
-                    </div>
-                `).join('');
-            } else {
-                bagsList.innerHTML = '<div class="card"><p style="color: var(--sage);">No bags yet. Create one to get started!</p></div>';
-            }
-
-            // Collections list
-            const collList = document.getElementById('collList');
-            if (app.collections.length > 0) {
-                collList.innerHTML = app.collections.map(c => `
-                    <div class="card">
-                        <h3 style="font-family: 'Crimson Text', serif; font-size: 20px;">${c.name}</h3>
-                        <p style="color: var(--sage);">${c.description || 'No description'}</p>
-                    </div>
-                `).join('');
-            } else {
-                collList.innerHTML = '<div class="card"><p style="color: var(--sage);">No collections yet.</p></div>';
-            }
-
-            // Collections select
-            const select = document.getElementById('bagColl');
-            select.innerHTML = '<option value="">None</option>';
-            app.collections.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.id;
-                opt.textContent = c.name;
-                select.appendChild(opt);
-            });
-
-            // Bags select for production
-            const pBag = document.getElementById('pBag');
-            pBag.innerHTML = '<option>Select a bag</option>';
-            app.bags.forEach(b => {
-                const opt = document.createElement('option');
-                opt.value = b.id;
-                opt.textContent = b.name;
-                pBag.appendChild(opt);
-            });
-        }
-
-        // MODALS
-        function openBagModal() { document.getElementById('bagModal').classList.add('active'); }
-        function closeBagModal() { document.getElementById('bagModal').classList.remove('active'); }
-        function openCollModal() { document.getElementById('collModal').classList.add('active'); }
-        function closeCollModal() { document.getElementById('collModal').classList.remove('active'); }
-
-        // PAGE SWITCH
-        function switchPage(p) {
-            document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
-            document.getElementById(p).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // MESSAGES
         function showMsg(text, type) {
             const msg = document.getElementById('msg');
             msg.innerHTML = `<div class="message ${type}">${text}</div>`;
             setTimeout(() => msg.innerHTML = '', 3000);
         }
-
-        // PRODUCTION FORM
-        document.getElementById('prodForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            try {
-                const prod = {
-                    date: document.getElementById('pDate').value,
-                    bagId: document.getElementById('pBag').value,
-                    hours: parseFloat(document.getElementById('pHours').value),
-                    activity: document.getElementById('pActivity').value,
-                    created: new Date()
-                };
-
-                await db.collection('productions').add(prod);
-                app.productions.push(prod);
-
-                this.reset();
-                showMsg('Production entry saved!', 'success');
-                updateUI();
-            } catch (err) {
-                showMsg('Error: ' + err.message, 'error');
-            }
-        });
-
-        // START
-        init();
     </script>
 </body>
 </html>
