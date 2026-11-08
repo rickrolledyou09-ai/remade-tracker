@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReMade Studio - Production Management</title>
+    <title>ReMade Studio — Production Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <style>
         * {
@@ -13,305 +14,249 @@
         }
 
         :root {
-            --forest-green: #1b4332;
-            --sage: #6b9080;
-            --cream: #fef9f3;
-            --beige: #d4a574;
-            --charcoal: #2a2a2a;
-            --light-border: #e8dcc8;
-            --bg-light: #faf7f2;
+            --forest-green: #193D30;
+            --cream: #F5F0E6;
+            --sage: #A7AE98;
+            --beige: #DCD2C2;
+            --charcoal: #30332E;
+            --white: #FFFFFF;
+            --light-bg: #FAFAF8;
+            --border: #E8E4D8;
+            --success: #6B9A7E;
+            --warning: #D4A574;
+            --error: #C65D47;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--cream);
             color: var(--charcoal);
+            line-height: 1.6;
         }
 
-        .app-container {
+        h1, h2, h3, h4 {
+            font-family: 'Crimson Text', Georgia, serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .app-wrapper {
             display: flex;
             min-height: 100vh;
         }
 
         /* SIDEBAR */
         .sidebar {
-            width: 250px;
-            background: var(--forest-green);
-            color: var(--cream);
-            padding: 30px 20px;
+            width: 260px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 40px 25px;
             position: fixed;
             height: 100vh;
             overflow-y: auto;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar-header {
-            margin-bottom: 40px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 20px;
+            margin-bottom: 50px;
         }
 
         .sidebar-logo {
-            font-size: 20px;
-            font-weight: 300;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            font-family: 'Crimson Text', Georgia, serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--forest-green);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .sidebar-tagline {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--sage);
-            margin-top: 8px;
-            letter-spacing: 1px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
-        .nav-items {
+        .nav-list {
             list-style: none;
         }
 
         .nav-item {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
 
         .nav-link {
             display: block;
             padding: 12px 15px;
-            color: var(--cream);
+            font-size: 13px;
+            color: var(--charcoal);
             text-decoration: none;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            font-size: 14px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
             cursor: pointer;
             border: 1px solid transparent;
-        }
-
-        .nav-link:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--beige);
-        }
-
-        .nav-link.active {
-            background: var(--beige);
-            color: var(--forest-green);
             font-weight: 500;
         }
 
+        .nav-link:hover {
+            background: var(--light-bg);
+            color: var(--forest-green);
+        }
+
+        .nav-link.active {
+            background: var(--forest-green);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--sage);
+        }
+
         /* MAIN CONTENT */
-        .main-content {
-            margin-left: 250px;
+        .main-area {
+            margin-left: 260px;
             flex: 1;
-            padding: 40px;
+            background: var(--cream);
+            padding: 50px;
+            padding-top: 40px;
         }
 
         .page-header {
-            margin-bottom: 40px;
+            margin-bottom: 50px;
+            animation: fadeIn 0.3s ease;
         }
 
         .page-title {
-            font-size: 32px;
-            font-weight: 300;
+            font-family: 'Crimson Text', Georgia, serif;
+            font-size: 42px;
+            font-weight: 600;
+            color: var(--charcoal);
             margin-bottom: 8px;
-            letter-spacing: 0.5px;
+            letter-spacing: -0.5px;
         }
 
         .page-subtitle {
             font-size: 14px;
             color: var(--sage);
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            font-weight: 400;
         }
 
-        /* DASHBOARD GRID */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* STAT CARDS */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
 
         .stat-card {
-            background: white;
+            background: var(--white);
             padding: 25px;
-            border-radius: 8px;
-            border: 1px solid var(--light-border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            border-radius: 10px;
             transition: all 0.3s ease;
         }
 
         .stat-card:hover {
             border-color: var(--sage);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--sage);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.2px;
             margin-bottom: 12px;
+            font-weight: 600;
         }
 
         .stat-value {
-            font-size: 28px;
-            font-weight: 300;
+            font-family: 'Crimson Text', Georgia, serif;
+            font-size: 32px;
+            font-weight: 600;
             color: var(--forest-green);
+            line-height: 1;
         }
 
         .stat-unit {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--sage);
-            margin-left: 8px;
+            font-weight: 400;
+            margin-left: 6px;
         }
 
-        /* CONTENT SECTIONS */
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        .section-card {
-            background: white;
-            border: 1px solid var(--light-border);
-            border-radius: 8px;
+        /* CARDS */
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
         }
 
-        .section-title {
-            font-size: 20px;
-            font-weight: 400;
+        .card-title {
+            font-family: 'Crimson Text', Georgia, serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--charcoal);
             margin-bottom: 25px;
-            color: var(--forest-green);
-            border-bottom: 1px solid var(--light-border);
             padding-bottom: 15px;
-        }
-
-        /* FORMS */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--charcoal);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--light-border);
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--forest-green);
-            box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.1);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        /* BUTTONS */
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: var(--forest-green);
-            color: var(--cream);
-        }
-
-        .btn-primary:hover {
-            background: #0f2e1f;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(27, 67, 50, 0.2);
-        }
-
-        .btn-secondary {
-            background: var(--light-border);
-            color: var(--charcoal);
-        }
-
-        .btn-secondary:hover {
-            background: var(--sage);
-            color: white;
-        }
-
-        .btn-danger {
-            background: #d97760;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c45a47;
-        }
-
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 12px;
-        }
-
-        /* LISTS & TABLES */
-        .entry-list {
-            margin-top: 20px;
+            border-bottom: 1px solid var(--border);
         }
 
         .entry-item {
             padding: 20px;
-            border: 1px solid var(--light-border);
-            border-radius: 6px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             margin-bottom: 15px;
-            background: var(--bg-light);
-            transition: all 0.3s ease;
+            background: var(--light-bg);
+            transition: all 0.2s ease;
         }
 
         .entry-item:hover {
             border-color: var(--sage);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            background: var(--white);
         }
 
         .entry-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 12px;
         }
 
         .entry-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--forest-green);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--charcoal);
         }
 
         .entry-date {
             font-size: 12px;
             color: var(--sage);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         .entry-details {
@@ -320,12 +265,109 @@
             line-height: 1.6;
         }
 
-        .entry-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
+        .entry-details span {
+            color: var(--sage);
+            margin-right: 12px;
         }
 
+        /* FORMS */
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--charcoal);
+            transition: all 0.2s ease;
+            background: var(--white);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--sage);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--forest-green);
+            box-shadow: 0 0 0 3px rgba(25, 61, 48, 0.08);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        /* BUTTONS */
+        button {
+            padding: 12px 24px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--forest-green);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #0F2A22;
+        }
+
+        .btn-secondary {
+            background: var(--light-bg);
+            color: var(--charcoal);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--beige);
+            border-color: var(--sage);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #B84A37;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 11px;
+        }
+
+        /* TABLES */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -334,141 +376,124 @@
 
         th {
             text-align: left;
-            padding: 15px;
-            border-bottom: 2px solid var(--light-border);
-            font-size: 12px;
-            font-weight: 600;
+            padding: 12px;
+            border-bottom: 2px solid var(--border);
+            font-size: 11px;
+            font-weight: 700;
             color: var(--forest-green);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         td {
-            padding: 15px;
-            border-bottom: 1px solid var(--light-border);
-            font-size: 14px;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
         }
 
         tr:hover {
-            background: var(--bg-light);
+            background: var(--light-bg);
         }
 
         /* CHARTS */
         .chart-container {
             position: relative;
-            height: 300px;
+            height: 350px;
             margin: 30px 0;
             padding: 20px;
-            background: white;
-            border: 1px solid var(--light-border);
-            border-radius: 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
         }
 
         /* MESSAGES */
         .message {
-            padding: 16px 20px;
-            border-radius: 6px;
+            padding: 15px 20px;
+            border-radius: 8px;
             margin-bottom: 20px;
-            font-size: 14px;
+            font-size: 13px;
             border-left: 4px solid;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .message.success {
-            background: #f0f9f6;
-            color: #1b4332;
-            border-color: #6b9080;
+            background: #F0F7F4;
+            color: var(--success);
+            border-color: var(--success);
         }
 
         .message.error {
-            background: #fef4f0;
-            color: #a84028;
-            border-color: #d97760;
+            background: #FDF1ED;
+            color: var(--error);
+            border-color: var(--error);
         }
 
         .message.info {
-            background: #f8f5f0;
-            color: #5a4a3a;
-            border-color: #d4a574;
+            background: #F8F6F1;
+            color: var(--charcoal);
+            border-color: var(--sage);
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 200px;
-            }
-
-            .main-content {
-                margin-left: 200px;
-                padding: 25px;
-            }
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        @media (max-width: 768px) {
-            .app-container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: static;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 15px;
-            }
-
-            .sidebar-header {
-                margin-bottom: 0;
-                border-bottom: none;
-                padding-bottom: 0;
-            }
-
-            .nav-items {
-                display: flex;
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 5px;
-            }
-
-            .nav-item {
-                margin-bottom: 0;
-            }
-
-            .nav-link {
-                padding: 8px 12px;
-                font-size: 12px;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 20px;
-            }
-
-            .page-title {
-                font-size: 24px;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 15px;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .entry-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .entry-date {
-                margin-top: 8px;
-            }
+        .badge-completed {
+            background: #E8F5F1;
+            color: var(--success);
         }
 
-        /* MODALS */
+        .badge-in-progress {
+            background: #FEF4ED;
+            color: var(--warning);
+        }
+
+        .badge-planned {
+            background: #F5F2ED;
+            color: var(--charcoal);
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            padding: 60px 40px;
+            text-align: center;
+            color: var(--sage);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-family: 'Crimson Text', Georgia, serif;
+            font-size: 24px;
+            color: var(--charcoal);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+            color: var(--sage);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* MODAL */
         .modal {
             display: none;
             position: fixed;
@@ -476,7 +501,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -487,21 +512,23 @@
         }
 
         .modal-content {
-            background: white;
+            background: var(--white);
             padding: 40px;
-            border-radius: 8px;
+            border-radius: 12px;
             max-width: 600px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
+            position: relative;
         }
 
         .modal-header {
-            font-size: 24px;
-            font-weight: 400;
+            font-family: 'Crimson Text', Georgia, serif;
+            font-size: 28px;
+            font-weight: 600;
             margin-bottom: 25px;
-            color: var(--forest-green);
-            border-bottom: 1px solid var(--light-border);
+            color: var(--charcoal);
+            border-bottom: 1px solid var(--border);
             padding-bottom: 15px;
         }
 
@@ -516,1197 +543,671 @@
             color: var(--sage);
         }
 
-        /* BADGES & TAGS */
-        .badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .badge-success {
-            background: #f0f9f6;
-            color: #1b4332;
-        }
-
-        .badge-pending {
-            background: #fef4f0;
-            color: #a84028;
-        }
-
-        .badge-in-progress {
-            background: #f8f5f0;
-            color: #5a4a3a;
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .app-wrapper { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; padding: 20px; flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+            .sidebar-logo { font-size: 20px; }
+            .nav-list { display: flex; flex-wrap: wrap; gap: 10px; }
+            .nav-item { margin-bottom: 0; }
+            .nav-link { padding: 8px 12px; font-size: 12px; white-space: nowrap; }
+            .sidebar-footer { display: none; }
+            .main-area { margin-left: 0; padding: 20px; }
+            .page-title { font-size: 28px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .entry-header { flex-direction: column; gap: 8px; }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
+    <div class="app-wrapper">
         <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo">ReMade Studio</div>
-                <div class="sidebar-tagline">Production Management</div>
+                <div class="sidebar-logo">ReMade</div>
+                <div class="sidebar-tagline">Studio</div>
             </div>
-            <ul class="nav-items">
-                <li class="nav-item"><a class="nav-link active" onclick="switchPage('dashboard')">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="switchPage('production')">Production Log</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="switchPage('bags')">My Bags</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="switchPage('collections')">Collections</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="switchPage('inventory')">Materials & Inventory</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="switchPage('analytics')">Analytics</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="switchPage('financial')">Financial Overview</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="switchPage('reports')">Reports</a></li>
-                <li class="nav-item"><a class="nav-link" onclick="switchPage('settings')">Settings</a></li>
-            </ul>
+
+            <nav style="flex: 1;">
+                <ul class="nav-list">
+                    <li class="nav-item"><a class="nav-link active" onclick="switchPage('overview')">Overview</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('production')">Production Log</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('bags')">My Bags</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('collections')">Collections</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('inventory')">Materials</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('analytics')">Analytics</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('financial')">Financial</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('reports')">Reports</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('settings')">Settings</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" onclick="exportData(); return false;">Backup</a>
+                <a href="#" onclick="alert('ReMade Studio v1.0'); return false;">About</a>
+            </div>
         </div>
 
         <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <!-- DASHBOARD -->
-            <div id="dashboard" class="section active">
+        <div class="main-area">
+            <!-- OVERVIEW -->
+            <div id="overview" class="page active">
                 <div class="page-header">
-                    <div class="page-title">Dashboard</div>
-                    <div class="page-subtitle">Production Overview</div>
+                    <div class="page-title">Welcome back to your studio.</div>
+                    <div class="page-subtitle">Every piece has a story. Here's what you've been creating.</div>
                 </div>
 
-                <div id="dashMessage"></div>
+                <div id="overviewMsg"></div>
 
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Production Hours</div>
-                        <div class="stat-value"><span id="totalHours">0</span><span class="stat-unit">h</span></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Completed Bags</div>
-                        <div class="stat-value" id="completedBags">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">In Production</div>
-                        <div class="stat-value" id="inProduction">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total Expenses</div>
-                        <div class="stat-value">€<span id="totalExpenses">0.00</span></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total Revenue</div>
-                        <div class="stat-value">€<span id="totalRevenue">0.00</span></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Net Profit</div>
-                        <div class="stat-value">€<span id="netProfit">0.00</span></div>
-                    </div>
+                    <div class="stat-card"><div class="stat-label">Production Hours</div><div class="stat-value"><span id="s1">0</span><span class="stat-unit">h</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Total Bags</div><div class="stat-value" id="s2">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-value" id="s3">0</div></div>
+                    <div class="stat-card"><div class="stat-label">In Production</div><div class="stat-value" id="s4">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Total Expenses</div><div class="stat-value">€<span id="s5">0.00</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value">€<span id="s6">0.00</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Avg Time per Bag</div><div class="stat-value"><span id="s7">0</span><span class="stat-unit">h</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Profit</div><div class="stat-value">€<span id="s8">0.00</span></div></div>
                 </div>
 
-                <div class="section-card">
-                    <div class="section-title">Production Activity</div>
-                    <div id="dashboardActivity"></div>
+                <div class="card">
+                    <div class="card-title">Recent Activity</div>
+                    <div id="recentAct"></div>
                 </div>
 
-                <div class="section-card">
-                    <div class="section-title">Weekly Production</div>
-                    <div class="chart-container">
-                        <canvas id="weeklyChart"></canvas>
-                    </div>
+                <div class="card">
+                    <div class="card-title">Production Hours</div>
+                    <div class="chart-container"><canvas id="chart1"></canvas></div>
                 </div>
 
-                <div class="section-card">
-                    <div class="section-title">Current Projects</div>
-                    <div id="currentProjects"></div>
+                <div class="card">
+                    <div class="card-title">Current Projects</div>
+                    <div id="projects"></div>
                 </div>
             </div>
 
             <!-- PRODUCTION LOG -->
-            <div id="production" class="section">
+            <div id="production" class="page">
                 <div class="page-header">
                     <div class="page-title">Production Log</div>
-                    <div class="page-subtitle">Track Your Work</div>
+                    <div class="page-subtitle">Track your work session by session</div>
                 </div>
 
-                <div class="section-card">
-                    <div class="section-title">New Production Entry</div>
-                    <form id="productionForm">
+                <div id="prodMsg"></div>
+
+                <div class="card">
+                    <div class="card-title">New Entry</div>
+                    <form id="prodForm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Date *</label>
-                                <input type="date" id="prodDate" required>
+                                <label>Date</label>
+                                <input type="date" id="pDate" required>
                             </div>
                             <div class="form-group">
-                                <label>Select Bag *</label>
-                                <select id="prodBag" required>
-                                    <option value="">-- Select a bag --</option>
-                                </select>
+                                <label>Bag</label>
+                                <select id="pBag" required><option>Select bag</option></select>
                             </div>
                         </div>
-
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Hours Worked *</label>
-                                <input type="number" id="prodHours" step="0.5" min="0" required>
+                                <label>Hours</label>
+                                <input type="number" id="pHours" min="0" step="0.5" required>
                             </div>
                             <div class="form-group">
-                                <label>Activity Type *</label>
-                                <select id="prodActivity" required>
-                                    <option value="">-- Select --</option>
-                                    <option value="Cutting">Cutting Fabric</option>
-                                    <option value="Sewing">Sewing</option>
-                                    <option value="Finishing">Finishing</option>
-                                    <option value="Quality Check">Quality Check</option>
-                                    <option value="Photography">Photography</option>
-                                    <option value="Other">Other</option>
-                                </select>
+                                <label>Minutes</label>
+                                <input type="number" id="pMinutes" min="0" max="59" step="15" value="0">
                             </div>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Material Expenses (EUR)</label>
-                                <input type="number" id="prodMaterialCost" step="0.01" min="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Additional Expenses (EUR)</label>
-                                <input type="number" id="prodAdditionalCost" step="0.01" min="0">
-                            </div>
-                        </div>
-
                         <div class="form-group">
-                            <label>Progress Update (%)</label>
-                            <input type="number" id="prodProgress" step="10" min="0" max="100" value="0">
+                            <label>Activity Type</label>
+                            <select id="pActivity" required>
+                                <option>Cutting Fabric</option>
+                                <option>Sewing</option>
+                                <option>Crocheting</option>
+                                <option>Embroidery</option>
+                                <option>Ironing</option>
+                                <option>Designing</option>
+                                <option>Printing</option>
+                                <option>Assembling</option>
+                                <option>Finishing</option>
+                                <option>Other</option>
+                            </select>
                         </div>
-
+                        <div class="form-group">
+                            <label>Materials Used</label>
+                            <textarea id="pMaterials" placeholder="e.g., Denim, thread, zippers"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Material Cost (€)</label>
+                                <input type="number" id="pMatCost" min="0" step="0.01" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Additional Cost (€)</label>
+                                <input type="number" id="pAddCost" min="0" step="0.01" value="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Progress (%)</label>
+                            <input type="number" id="pProgress" min="0" max="100" step="10" value="0">
+                        </div>
                         <div class="form-group">
                             <label>Notes</label>
-                            <textarea id="prodNotes" rows="3"></textarea>
+                            <textarea id="pNotes"></textarea>
                         </div>
-
-                        <button type="submit" class="btn-primary">Save Production Entry</button>
+                        <button type="submit" class="btn-primary">Save Entry</button>
                     </form>
                 </div>
 
-                <div class="section-card">
-                    <div class="section-title">Production History</div>
-                    <div id="productionList"></div>
+                <div class="card">
+                    <div class="card-title">History</div>
+                    <div id="prodHist"></div>
                 </div>
             </div>
 
             <!-- MY BAGS -->
-            <div id="bags" class="section">
+            <div id="bags" class="page">
                 <div class="page-header">
                     <div class="page-title">My Bags</div>
-                    <div class="page-subtitle">Bag Inventory & Profiles</div>
+                    <div class="page-subtitle">Individual bag profiles and production details</div>
                 </div>
-
-                <div class="section-card">
-                    <button class="btn-primary" onclick="openBagModal()">+ Create New Bag</button>
-                </div>
-
+                <button class="btn-primary" style="margin-bottom: 30px;" onclick="openBagModal()">+ Create New Bag</button>
                 <div id="bagsList"></div>
             </div>
 
             <!-- COLLECTIONS -->
-            <div id="collections" class="section">
+            <div id="collections" class="page">
                 <div class="page-header">
                     <div class="page-title">Collections</div>
-                    <div class="page-subtitle">Organize Your Bags</div>
+                    <div class="page-subtitle">Organize your bags by collection</div>
                 </div>
-
-                <div class="section-card">
-                    <button class="btn-primary" onclick="openCollectionModal()">+ Create New Collection</button>
-                </div>
-
-                <div id="collectionsList"></div>
+                <button class="btn-primary" style="margin-bottom: 30px;" onclick="openCollModal()">+ Create Collection</button>
+                <div id="collList"></div>
             </div>
 
             <!-- INVENTORY -->
-            <div id="inventory" class="section">
+            <div id="inventory" class="page">
                 <div class="page-header">
                     <div class="page-title">Materials & Inventory</div>
-                    <div class="page-subtitle">Track Your Supplies</div>
+                    <div class="page-subtitle">Track your supplies and materials</div>
                 </div>
-
-                <div class="section-card">
-                    <button class="btn-primary" onclick="openInventoryModal()">+ Add Material</button>
-                </div>
-
-                <div id="inventoryList"></div>
+                <button class="btn-primary" style="margin-bottom: 30px;" onclick="openInvModal()">+ Add Material</button>
+                <div id="invList"></div>
             </div>
 
             <!-- ANALYTICS -->
-            <div id="analytics" class="section">
+            <div id="analytics" class="page">
                 <div class="page-header">
-                    <div class="page-title">Analytics</div>
-                    <div class="page-subtitle">Production Insights</div>
+                    <div class="page-title">Time Analytics</div>
+                    <div class="page-subtitle">Production insights and trends</div>
                 </div>
-
-                <div class="section-card">
-                    <div class="section-title">Hours Worked by Week</div>
-                    <div class="chart-container">
-                        <canvas id="hoursChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="section-card">
-                    <div class="section-title">Activity Breakdown</div>
-                    <div class="chart-container">
-                        <canvas id="activityChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="section-card">
-                    <div class="section-title">Collection Performance</div>
-                    <div class="chart-container">
-                        <canvas id="collectionChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="section-card">
-                    <div class="section-title">Time per Bag</div>
-                    <div id="timePerBag"></div>
-                </div>
+                <div class="card"><div class="card-title">Hours by Week</div><div class="chart-container"><canvas id="chart2"></canvas></div></div>
+                <div class="card"><div class="card-title">Activity Breakdown</div><div class="chart-container"><canvas id="chart3"></canvas></div></div>
+                <div class="card"><div class="card-title">Time per Bag</div><div id="timePerBag"></div></div>
+                <div class="card"><div class="card-title">Key Metrics</div><table><tr><td><strong>Avg Hours per Bag:</strong></td><td><span id="m1">0</span>h</td></tr><tr><td><strong>Avg Session:</strong></td><td><span id="m2">0</span>h</td></tr><tr><td><strong>Most Time-Consuming:</strong></td><td><span id="m3">—</span></td></tr><tr><td><strong>Most Frequent Activity:</strong></td><td><span id="m4">—</span></td></tr></table></div>
             </div>
 
             <!-- FINANCIAL -->
-            <div id="financial" class="section">
+            <div id="financial" class="page">
                 <div class="page-header">
                     <div class="page-title">Financial Overview</div>
-                    <div class="page-subtitle">Revenue & Profit Analysis</div>
+                    <div class="page-subtitle">Revenue, costs and profitability analysis</div>
                 </div>
-
-                <div class="section-card">
-                    <div class="section-title">Settings</div>
-                    <div class="form-group">
-                        <label>Hourly Rate (EUR/hour)</label>
-                        <input type="number" id="hourlyRate" step="0.01" min="0" value="15.00" onchange="updateFinancials()">
-                    </div>
-                    <div class="form-group">
-                        <label>Profit Margin (%)</label>
-                        <input type="number" id="profitMargin" step="5" min="0" value="30" onchange="updateFinancials()">
+                <div class="card">
+                    <div class="card-title">Settings</div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Hourly Labour Rate (€/h)</label><input type="number" id="fRate" min="0" step="0.01" value="15" onchange="updateAll()"></div>
+                        <div class="form-group"><label>Profit Margin (%)</label><input type="number" id="fMargin" min="0" step="1" value="30" onchange="updateAll()"></div>
                     </div>
                 </div>
-
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Production Cost</div>
-                        <div class="stat-value">€<span id="totalCost">0.00</span></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Labour Value</div>
-                        <div class="stat-value">€<span id="labourValue">0.00</span></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total Revenue</div>
-                        <div class="stat-value">€<span id="finRevenue">0.00</span></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Profit</div>
-                        <div class="stat-value">€<span id="profit">0.00</span></div>
-                    </div>
+                    <div class="stat-card"><div class="stat-label">Material Costs</div><div class="stat-value">€<span id="f1">0.00</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Labour Value</div><div class="stat-value">€<span id="f2">0.00</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Est. Production Cost</div><div class="stat-value">€<span id="f3">0.00</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value">€<span id="f4">0.00</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Est. Profit</div><div class="stat-value">€<span id="f5">0.00</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Actual Profit</div><div class="stat-value">€<span id="f6">0.00</span></div></div>
                 </div>
-
-                <div class="section-card">
-                    <div class="section-title">Bag Profitability</div>
-                    <div id="profitabilityTable"></div>
-                </div>
-
-                <div class="section-card">
-                    <div class="section-title">Monthly Revenue</div>
-                    <div class="chart-container">
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                </div>
+                <div class="card"><div class="card-title">Bag Profitability</div><div id="profTable"></div></div>
+                <div class="card"><div class="card-title">Monthly Revenue</div><div class="chart-container"><canvas id="chart4"></canvas></div></div>
             </div>
 
             <!-- REPORTS -->
-            <div id="reports" class="section">
+            <div id="reports" class="page">
                 <div class="page-header">
                     <div class="page-title">Reports</div>
-                    <div class="page-subtitle">Export & Analyze</div>
+                    <div class="page-subtitle">Summaries and data exports</div>
                 </div>
-
-                <div class="section-card">
-                    <div class="section-title">Generate Report</div>
-                    <div class="form-group">
-                        <label>Report Type</label>
-                        <select id="reportType" onchange="generateReport()">
-                            <option value="weekly">Weekly Summary</option>
-                            <option value="monthly">Monthly Summary</option>
-                            <option value="production">Production Details</option>
-                            <option value="financial">Financial Summary</option>
-                        </select>
+                <div class="card">
+                    <div class="card-title">Generate Report</div>
+                    <div class="form-group"><label>Report Type</label><select id="repType" onchange="genReport()"><option value="weekly">Weekly Summary</option><option value="production">Production Details</option><option value="financial">Financial Summary</option></select></div>
+                    <div id="repOut"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Export Data</div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn-secondary" onclick="expJSON()">Export JSON</button>
+                        <button class="btn-secondary" onclick="expCSV()">Export CSV</button>
                     </div>
-                    <div id="reportContent"></div>
                 </div>
-
-                <div class="section-card">
-                    <div class="section-title">Export Data</div>
-                    <button class="btn-secondary" onclick="exportJSON()" style="margin-right: 10px;">Export as JSON</button>
-                    <button class="btn-secondary" onclick="exportCSV()">Export as CSV</button>
-                </div>
-
-                <div class="section-card">
-                    <div class="section-title">Backup & Restore</div>
-                    <input type="file" id="restoreFile" accept=".json">
-                    <button class="btn-secondary" onclick="restoreData()" style="margin-top: 10px;">Restore Data</button>
+                <div class="card">
+                    <div class="card-title">Backup & Restore</div>
+                    <input type="file" id="restFile" accept=".json" style="margin-bottom: 15px;">
+                    <button class="btn-secondary" onclick="restData()">Restore</button>
                 </div>
             </div>
 
             <!-- SETTINGS -->
-            <div id="settings" class="section">
+            <div id="settings" class="page">
                 <div class="page-header">
                     <div class="page-title">Settings</div>
-                    <div class="page-subtitle">Configuration</div>
+                    <div class="page-subtitle">Configuration and customization</div>
                 </div>
-
-                <div class="section-card">
-                    <div class="section-title">Application Settings</div>
-                    <div class="form-group">
-                        <label>Hourly Rate (EUR)</label>
-                        <input type="number" id="settingsHourlyRate" step="0.01" min="0" value="15.00" onchange="saveSettings()">
-                    </div>
-                    <div class="form-group">
-                        <label>Default Profit Margin (%)</label>
-                        <input type="number" id="settingsProfitMargin" step="5" min="0" value="30" onchange="saveSettings()">
+                <div class="card">
+                    <div class="card-title">Business Settings</div>
+                    <div class="form-group"><label>Business Name</label><input type="text" id="busName" value="ReMade" onchange="savSet()"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Hourly Rate (€/h)</label><input type="number" id="setRate" min="0" step="0.01" value="15" onchange="savSet()"></div>
+                        <div class="form-group"><label>Profit Margin (%)</label><input type="number" id="setMargin" min="0" step="1" value="30" onchange="savSet()"></div>
                     </div>
                 </div>
-
-                <div class="section-card">
-                    <div class="section-title">Data Management</div>
-                    <button class="btn-secondary" onclick="exportJSON()" style="margin-right: 10px;">Backup All Data</button>
-                    <button class="btn-danger" onclick="clearAllData()">Clear All Data</button>
-                    <p style="color: var(--sage); font-size: 12px; margin-top: 10px;">⚠️ Clearing data cannot be undone. Backup first!</p>
+                <div class="card">
+                    <div class="card-title">Data Management</div>
+                    <button class="btn-secondary" style="margin-right: 10px;" onclick="expJSON()">Download Backup</button>
+                    <button class="btn-secondary" style="margin-right: 10px;" onclick="document.getElementById('restFile2').click()">Restore</button>
+                    <input type="file" id="restFile2" accept=".json" style="display: none;" onchange="restData()">
+                    <button class="btn-danger" style="margin-top: 15px;" onclick="if(confirm('Delete ALL data?')) { if(confirm('Are you sure?')) { app.bags=[]; app.productions=[]; app.collections=[]; app.inventory=[]; save(); updateAll(); } }">Clear All</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- MODALS -->
-    <div id="bagModal" class="modal">
+    <div id="bagMod" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeBagModal()">&times;</button>
-            <div class="modal-header">Bag Profile</div>
-            <form id="bagForm">
-                <div class="form-group">
-                    <label>Bag Name *</label>
-                    <input type="text" id="bagName" required>
-                </div>
-                <div class="form-group">
-                    <label>Collection</label>
-                    <select id="bagCollection">
-                        <option value="">-- Select --</option>
-                    </select>
-                </div>
+            <div class="modal-header">New Bag</div>
+            <form id="bagFrm">
+                <div class="form-group"><label>Bag Name *</label><input type="text" id="bagNm" required></div>
+                <div class="form-group"><label>Collection</label><select id="bagCol"><option>None</option></select></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Start Date</label>
-                        <input type="date" id="bagStartDate">
-                    </div>
-                    <div class="form-group">
-                        <label>Completion Date</label>
-                        <input type="date" id="bagCompletionDate">
-                    </div>
+                    <div class="form-group"><label>Start Date</label><input type="date" id="bagSt"></div>
+                    <div class="form-group"><label>Status</label><select id="bagSts"><option>Planned</option><option>Not Started</option><option>In Progress</option><option>Almost Finished</option><option>Completed</option><option>Sold</option></select></div>
                 </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="bagStatus">
-                        <option value="Planning">Planning</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Sold">Sold</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Notes</label>
-                    <textarea id="bagNotes" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn-primary">Save Bag</button>
+                <div class="form-group"><label>Description</label><textarea id="bagDesc"></textarea></div>
+                <div class="form-group"><label>Notes</label><textarea id="bagNts"></textarea></div>
+                <button type="submit" class="btn-primary">Create</button>
             </form>
         </div>
     </div>
 
-    <div id="collectionModal" class="modal">
+    <div id="collMod" class="modal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeCollectionModal()">&times;</button>
+            <button class="modal-close" onclick="closeCollModal()">&times;</button>
             <div class="modal-header">New Collection</div>
-            <form id="collectionForm">
-                <div class="form-group">
-                    <label>Collection Name *</label>
-                    <input type="text" id="collectionName" required>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="collectionDescription" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn-primary">Create Collection</button>
+            <form id="collFrm">
+                <div class="form-group"><label>Name *</label><input type="text" id="collNm" required></div>
+                <div class="form-group"><label>Description</label><textarea id="collDesc"></textarea></div>
+                <button type="submit" class="btn-primary">Create</button>
             </form>
         </div>
     </div>
 
-    <div id="inventoryModal" class="modal">
+    <div id="invMod" class="modal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeInventoryModal()">&times;</button>
+            <button class="modal-close" onclick="closeInvModal()">&times;</button>
             <div class="modal-header">Add Material</div>
-            <form id="inventoryForm">
-                <div class="form-group">
-                    <label>Material Name *</label>
-                    <input type="text" id="materialName" required>
+            <form id="invFrm">
+                <div class="form-group"><label>Name *</label><input type="text" id="matNm" required></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Category</label><select id="matCat"><option>Fabric</option><option>Thread</option><option>Hardware</option><option>Yarn</option><option>Other</option></select></div>
+                    <div class="form-group"><label>Quantity</label><input type="number" id="matQty" step="0.1" min="0"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Type *</label>
-                        <select id="materialType" required>
-                            <option value="">-- Select --</option>
-                            <option value="Fabric">Fabric</option>
-                            <option value="Thread">Thread</option>
-                            <option value="Hardware">Hardware</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Quantity</label>
-                        <input type="number" id="materialQuantity" step="0.1" min="0">
-                    </div>
+                    <div class="form-group"><label>Unit</label><input type="text" id="matUnt" placeholder="meters, pieces"></div>
+                    <div class="form-group"><label>Cost per Unit (€)</label><input type="number" id="matCst" step="0.01" min="0"></div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Unit</label>
-                        <input type="text" id="materialUnit" placeholder="e.g., meters, units">
-                    </div>
-                    <div class="form-group">
-                        <label>Cost per Unit (EUR)</label>
-                        <input type="number" id="materialCost" step="0.01" min="0">
-                    </div>
-                </div>
-                <button type="submit" class="btn-primary">Add Material</button>
+                <button type="submit" class="btn-primary">Add</button>
             </form>
         </div>
     </div>
 
     <script>
-        // INITIALIZE
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('prodDate').value = today;
+        const app = { bags: [], productions: [], collections: [], inventory: [], settings: { rate: 15, margin: 30 } };
 
-        // DATA STRUCTURE
-        const data = {
-            bags: [],
-            productions: [],
-            collections: [],
-            inventory: [],
-            settings: {
-                hourlyRate: 15.00,
-                profitMargin: 30
-            }
-        };
-
-        // LOAD DATA
-        function loadData() {
-            const saved = localStorage.getItem('remadeStudioData');
-            if (saved) {
-                const loaded = JSON.parse(saved);
-                Object.assign(data, loaded);
-            }
-            loadCollectionsSelect();
-            updateAllDisplays();
+        function init() {
+            const s = localStorage.getItem('remadeData');
+            if (s) try { Object.assign(app, JSON.parse(s)); } catch(e) {}
+            document.getElementById('pDate').valueAsDate = new Date();
+            updateAll();
         }
 
-        function saveData() {
-            localStorage.setItem('remadeStudioData', JSON.stringify(data));
-            updateAllDisplays();
-        }
-
-        // PAGE SWITCHING
-        function switchPage(page) {
-            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            document.getElementById(page).classList.add('active');
+        function save() { localStorage.setItem('remadeData', JSON.stringify(app)); }
+        function switchPage(p) {
+            document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
+            document.getElementById(p).classList.add('active');
             event.target.classList.add('active');
         }
 
-        // PRODUCTION FORM
-        document.getElementById('productionForm').addEventListener('submit', function(e) {
+        document.getElementById('prodForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-
-            const entry = {
-                id: Date.now(),
-                date: document.getElementById('prodDate').value,
-                bagId: document.getElementById('prodBag').value,
-                hours: parseFloat(document.getElementById('prodHours').value) || 0,
-                activity: document.getElementById('prodActivity').value,
-                materialCost: parseFloat(document.getElementById('prodMaterialCost').value) || 0,
-                additionalCost: parseFloat(document.getElementById('prodAdditionalCost').value) || 0,
-                progress: parseInt(document.getElementById('prodProgress').value) || 0,
-                notes: document.getElementById('prodNotes').value
+            const h = parseFloat(document.getElementById('pHours').value) || 0;
+            const m = parseInt(document.getElementById('pMinutes').value) || 0;
+            const prod = {
+                id: Date.now().toString(),
+                date: document.getElementById('pDate').value,
+                bagId: document.getElementById('pBag').value,
+                hours: h + m/60,
+                activity: document.getElementById('pActivity').value,
+                materials: document.getElementById('pMaterials').value,
+                matCost: parseFloat(document.getElementById('pMatCost').value) || 0,
+                addCost: parseFloat(document.getElementById('pAddCost').value) || 0,
+                progress: parseInt(document.getElementById('pProgress').value) || 0,
+                notes: document.getElementById('pNotes').value
             };
-
-            data.productions.push(entry);
-
-            // Update bag
-            const bag = data.bags.find(b => b.id === entry.bagId);
-            if (bag) {
-                bag.productionHours = (bag.productionHours || 0) + entry.hours;
-                bag.materialExpenses = (bag.materialExpenses || 0) + entry.materialCost;
-                bag.additionalExpenses = (bag.additionalExpenses || 0) + entry.additionalCost;
-                bag.progress = Math.min(100, entry.progress);
-                if (entry.progress >= 100) {
-                    bag.status = 'Completed';
-                    bag.completionDate = entry.date;
-                }
+            app.productions.push(prod);
+            const b = app.bags.find(x => x.id === prod.bagId);
+            if (b) {
+                b.hours = (b.hours || 0) + prod.hours;
+                b.sessions = (b.sessions || 0) + 1;
+                b.matCost = (b.matCost || 0) + prod.matCost;
+                b.addCost = (b.addCost || 0) + prod.addCost;
+                b.progress = prod.progress;
+                if (prod.progress >= 100) b.status = 'Completed';
             }
-
-            saveData();
-            this.reset();
-            document.getElementById('prodDate').value = today;
-            showMessage('dashMessage', 'Production entry saved!', 'success');
+            save(); this.reset(); document.getElementById('pDate').valueAsDate = new Date(); updateAll();
         });
 
-        // BAG MODAL
         function openBagModal() {
-            document.getElementById('bagModal').classList.add('active');
-            loadCollectionsSelect();
+            document.getElementById('bagMod').classList.add('active');
+            const s = document.getElementById('bagCol');
+            s.innerHTML = '<option>None</option>';
+            app.collections.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.text = c.name; s.appendChild(o); });
         }
 
-        function closeBagModal() {
-            document.getElementById('bagModal').classList.remove('active');
-        }
+        function closeBagModal() { document.getElementById('bagMod').classList.remove('active'); }
 
-        document.getElementById('bagForm').addEventListener('submit', function(e) {
+        document.getElementById('bagFrm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-
-            const bag = {
+            app.bags.push({
                 id: Date.now().toString(),
-                name: document.getElementById('bagName').value,
-                collection: document.getElementById('bagCollection').value,
-                startDate: document.getElementById('bagStartDate').value,
-                completionDate: document.getElementById('bagCompletionDate').value,
-                status: document.getElementById('bagStatus').value,
-                notes: document.getElementById('bagNotes').value,
-                productionHours: 0,
-                materialExpenses: 0,
-                additionalExpenses: 0,
-                progress: 0,
-                sellingPrice: 0,
-                actualSales: 0
-            };
-
-            data.bags.push(bag);
-            saveData();
-            this.reset();
-            closeBagModal();
-            showMessage('dashMessage', 'Bag created!', 'success');
+                name: document.getElementById('bagNm').value,
+                col: document.getElementById('bagCol').value,
+                startDate: document.getElementById('bagSt').value,
+                status: document.getElementById('bagSts').value,
+                desc: document.getElementById('bagDesc').value,
+                notes: document.getElementById('bagNts').value,
+                hours: 0, sessions: 0, progress: 0, matCost: 0, addCost: 0, sales: 0
+            });
+            save(); this.reset(); closeBagModal(); updateAll();
         });
 
-        // COLLECTION MODAL
-        function openCollectionModal() {
-            document.getElementById('collectionModal').classList.add('active');
-        }
+        function openCollModal() { document.getElementById('collMod').classList.add('active'); }
+        function closeCollModal() { document.getElementById('collMod').classList.remove('active'); }
 
-        function closeCollectionModal() {
-            document.getElementById('collectionModal').classList.remove('active');
-        }
-
-        document.getElementById('collectionForm').addEventListener('submit', function(e) {
+        document.getElementById('collFrm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-
-            const collection = {
-                id: Date.now().toString(),
-                name: document.getElementById('collectionName').value,
-                description: document.getElementById('collectionDescription').value
-            };
-
-            data.collections.push(collection);
-            saveData();
-            this.reset();
-            closeCollectionModal();
-            showMessage('dashMessage', 'Collection created!', 'success');
+            app.collections.push({ id: Date.now().toString(), name: document.getElementById('collNm').value, desc: document.getElementById('collDesc').value });
+            save(); this.reset(); closeCollModal(); updateAll();
         });
 
-        // INVENTORY MODAL
-        function openInventoryModal() {
-            document.getElementById('inventoryModal').classList.add('active');
-        }
+        function openInvModal() { document.getElementById('invMod').classList.add('active'); }
+        function closeInvModal() { document.getElementById('invMod').classList.remove('active'); }
 
-        function closeInventoryModal() {
-            document.getElementById('inventoryModal').classList.remove('active');
-        }
-
-        document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+        document.getElementById('invFrm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-
-            const material = {
+            app.inventory.push({
                 id: Date.now().toString(),
-                name: document.getElementById('materialName').value,
-                type: document.getElementById('materialType').value,
-                quantity: parseFloat(document.getElementById('materialQuantity').value) || 0,
-                unit: document.getElementById('materialUnit').value,
-                costPerUnit: parseFloat(document.getElementById('materialCost').value) || 0
-            };
-
-            data.inventory.push(material);
-            saveData();
-            this.reset();
-            closeInventoryModal();
-            showMessage('dashMessage', 'Material added!', 'success');
+                name: document.getElementById('matNm').value,
+                cat: document.getElementById('matCat').value,
+                qty: parseFloat(document.getElementById('matQty').value) || 0,
+                unit: document.getElementById('matUnt').value,
+                cost: parseFloat(document.getElementById('matCst').value) || 0
+            });
+            save(); this.reset(); closeInvModal(); updateAll();
         });
 
-        // LOAD COLLECTIONS SELECT
-        function loadCollectionsSelect() {
-            const select = document.getElementById('bagCollection');
-            const select2 = document.getElementById('bagCollection');
-            if (select) {
-                select.innerHTML = '<option value="">-- Select --</option>';
-                data.collections.forEach(c => {
-                    const option = document.createElement('option');
-                    option.value = c.id;
-                    option.textContent = c.name;
-                    select.appendChild(option);
-                });
-            }
-        }
+        function updateAll() {
+            const rate = parseFloat(document.getElementById('fRate')?.value || app.settings.rate);
+            const margin = parseInt(document.getElementById('fMargin')?.value || app.settings.margin);
+            const hours = app.productions.reduce((s, p) => s + p.hours, 0);
+            const completed = app.bags.filter(b => b.status === 'Completed' || b.status === 'Sold').length;
+            const inProg = app.bags.filter(b => b.status === 'In Progress' || b.status === 'Almost Finished').length;
+            const matCost = app.bags.reduce((s, b) => s + (b.matCost || 0), 0);
+            const addCost = app.bags.reduce((s, b) => s + (b.addCost || 0), 0);
+            const totalCost = matCost + addCost;
+            const labour = hours * rate;
+            const estCost = totalCost + labour;
+            const revenue = app.bags.reduce((s, b) => s + (b.sales || 0), 0);
+            const profit = revenue - estCost;
 
-        // UPDATE ALL DISPLAYS
-        function updateAllDisplays() {
-            updateDashboard();
-            updateProductionList();
-            updateBagsList();
-            updateCollectionsList();
-            updateInventoryList();
-            updateAnalytics();
-            updateFinancials();
-            updateReports();
-        }
+            document.getElementById('s1').textContent = hours.toFixed(1);
+            document.getElementById('s2').textContent = app.bags.length;
+            document.getElementById('s3').textContent = completed;
+            document.getElementById('s4').textContent = inProg;
+            document.getElementById('s5').textContent = totalCost.toFixed(2);
+            document.getElementById('s6').textContent = revenue.toFixed(2);
+            document.getElementById('s7').textContent = completed > 0 ? (hours / completed).toFixed(1) : '0';
+            document.getElementById('s8').textContent = profit.toFixed(2);
 
-        // DASHBOARD
-        function updateDashboard() {
-            const totalHours = data.productions.reduce((s, p) => s + p.hours, 0);
-            const completedBags = data.bags.filter(b => b.status === 'Completed' || b.status === 'Sold').length;
-            const inProgress = data.bags.filter(b => b.status === 'In Progress').length;
-            const totalExpenses = data.bags.reduce((s, b) => s + (b.materialExpenses || 0) + (b.additionalExpenses || 0), 0);
-            const totalRevenue = data.bags.reduce((s, b) => s + (b.actualSales || 0), 0);
-            const netProfit = totalRevenue - totalExpenses - (totalHours * data.settings.hourlyRate);
-
-            document.getElementById('totalHours').textContent = totalHours.toFixed(1);
-            document.getElementById('completedBags').textContent = completedBags;
-            document.getElementById('inProduction').textContent = inProgress;
-            document.getElementById('totalExpenses').textContent = totalExpenses.toFixed(2);
-            document.getElementById('totalRevenue').textContent = totalRevenue.toFixed(2);
-            document.getElementById('netProfit').textContent = netProfit.toFixed(2);
+            document.getElementById('f1').textContent = matCost.toFixed(2);
+            document.getElementById('f2').textContent = labour.toFixed(2);
+            document.getElementById('f3').textContent = estCost.toFixed(2);
+            document.getElementById('f4').textContent = revenue.toFixed(2);
+            document.getElementById('f5').textContent = ((estCost * (1 + margin/100)) - estCost).toFixed(2);
+            document.getElementById('f6').textContent = profit.toFixed(2);
 
             // Recent activity
-            const recent = data.productions.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
-            document.getElementById('dashboardActivity').innerHTML = recent.length > 0 ?
-                recent.map(p => {
-                    const bag = data.bags.find(b => b.id === p.bagId);
-                    return `
-                        <div class="entry-item">
-                            <div class="entry-header">
-                                <div class="entry-title">${bag ? bag.name : 'Unknown Bag'}</div>
-                                <div class="entry-date">${new Date(p.date).toLocaleDateString()}</div>
-                            </div>
-                            <div class="entry-details">${p.activity} • ${p.hours}h • €${(p.materialCost + p.additionalCost).toFixed(2)}</div>
-                        </div>
-                    `;
-                }).join('') : '<p style="color: var(--sage);">No production yet</p>';
+            const recent = app.productions.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+            document.getElementById('recentAct').innerHTML = recent.length > 0 ? recent.map(p => {
+                const b = app.bags.find(x => x.id === p.bagId);
+                return `<div class="entry-item"><div class="entry-header"><div class="entry-title">${b?.name || 'Unknown'}</div><div class="entry-date">${new Date(p.date).toLocaleDateString()}</div></div><div class="entry-details"><span>${p.activity}</span><span>${p.hours.toFixed(1)}h</span><span>€${(p.matCost + p.addCost).toFixed(2)}</span></div></div>`;
+            }).join('') : '<div class="empty-state-text">No entries yet</div>';
 
-            // Current projects
-            const currentProjects = data.bags.filter(b => b.status === 'In Progress').slice(0, 5);
-            document.getElementById('currentProjects').innerHTML = currentProjects.length > 0 ?
-                currentProjects.map(b => {
-                    const progressPercent = (b.progress || 0);
-                    return `
-                        <div class="entry-item">
-                            <div class="entry-header">
-                                <div class="entry-title">${b.name}</div>
-                                <span class="badge badge-in-progress">${progressPercent}% Complete</span>
-                            </div>
-                            <div class="entry-details">${b.productionHours || 0}h worked • Started ${new Date(b.startDate).toLocaleDateString()}</div>
-                        </div>
-                    `;
-                }).join('') : '<p style="color: var(--sage);">No active projects</p>';
+            // Projects
+            const proj = app.bags.filter(b => ['In Progress', 'Almost Finished', 'Planning'].includes(b.status));
+            document.getElementById('projects').innerHTML = proj.length > 0 ? proj.map(b => `<div class="entry-item"><div class="entry-header"><div class="entry-title">${b.name}</div><span class="badge badge-in-progress">${b.progress}%</span></div><div class="entry-details"><span>${(b.hours || 0).toFixed(1)}h</span><span>${b.status}</span></div></div>`).join('') : '<div class="empty-state-text">No active projects</div>';
+
+            // Production log
+            const sel = document.getElementById('pBag');
+            sel.innerHTML = '<option>Select bag</option>';
+            app.bags.forEach(b => { const o = document.createElement('option'); o.value = b.id; o.text = b.name; sel.appendChild(o); });
+
+            const hist = app.productions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            document.getElementById('prodHist').innerHTML = hist.length > 0 ? hist.map(p => {
+                const b = app.bags.find(x => x.id === p.bagId);
+                return `<div class="entry-item"><div class="entry-header"><div><div class="entry-title">${b?.name || 'Unknown'} - ${p.activity}</div><div class="entry-date">${new Date(p.date).toLocaleDateString()}</div></div><button class="btn-small btn-danger" onclick="app.productions=app.productions.filter(x=>x.id!=='${p.id}'); const bb=app.bags.find(y=>y.id==='${p.bagId}'); if(bb){bb.hours=Math.max(0,(bb.hours||0)-${p.hours}); bb.sessions=Math.max(0,(bb.sessions||0)-1);} save(); updateAll();">Delete</button></div><div class="entry-details"><span>${p.hours.toFixed(1)}h</span><span>€${(p.matCost + p.addCost).toFixed(2)}</span><span>${p.progress}%</span>${p.notes ? `<br><em>${p.notes}</em>` : ''}</div></div>`;
+            }).join('') : '<div class="empty-state"><div class="empty-state-icon">📝</div><div class="empty-state-title">No entries</div></div>';
+
+            // Bags list
+            document.getElementById('bagsList').innerHTML = app.bags.length > 0 ? app.bags.map(b => {
+                const cost = (b.matCost || 0) + (b.addCost || 0) + ((b.hours || 0) * rate);
+                const p = (b.sales || 0) - cost;
+                const c = app.collections.find(x => x.id === b.col)?.name || '—';
+                return `<div class="card"><div style="display: flex; justify-content: space-between; margin-bottom: 20px;"><div><div class="card-title" style="margin: 0; border: none; padding: 0;">${b.name}</div><div style="font-size: 12px; color: var(--sage); margin-top: 5px;">${c}</div></div><span class="badge badge-${b.status === 'Completed' || b.status === 'Sold' ? 'completed' : 'in-progress'}">${b.status}</span></div><table style="margin: 0;"><tr><td><strong>Hours:</strong></td><td>${(b.hours || 0).toFixed(1)}h</td></tr><tr><td><strong>Sessions:</strong></td><td>${b.sessions || 0}</td></tr><tr><td><strong>Material Cost:</strong></td><td>€${(b.matCost || 0).toFixed(2)}</td></tr><tr><td><strong>Additional:</strong></td><td>€${(b.addCost || 0).toFixed(2)}</td></tr><tr><td><strong>Labour:</strong></td><td>€${((b.hours || 0) * rate).toFixed(2)}</td></tr><tr style="border-top: 2px solid var(--border);"><td><strong>Total Cost:</strong></td><td><strong>€${cost.toFixed(2)}</strong></td></tr><tr><td><strong>Suggested Price:</strong></td><td>€${(cost * (1 + margin/100)).toFixed(2)}</td></tr><tr><td><strong>Actual Sales:</strong></td><td>€${(b.sales || 0).toFixed(2)}</td></tr><tr style="background: ${p >= 0 ? '#E8F5F1' : '#FDF1ED'};"><td><strong>Profit:</strong></td><td style="color: ${p >= 0 ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">€${p.toFixed(2)}</td></tr></table>${b.desc ? `<p style="margin-top: 15px; font-size: 13px;">${b.desc}</p>` : ''}${b.notes ? `<p style="margin-top: 10px; font-size: 12px; color: var(--sage); font-style: italic;">${b.notes}</p>` : ''}</div>`;
+            }).join('') : '<div class="empty-state"><div class="empty-state-icon">👜</div><div class="empty-state-title">No bags</div></div>';
+
+            // Collections
+            document.getElementById('collList').innerHTML = app.collections.length > 0 ? app.collections.map(c => {
+                const bags = app.bags.filter(b => b.col === c.id);
+                const h = bags.reduce((s, b) => s + (b.hours || 0), 0);
+                const cst = bags.reduce((s, b) => s + (b.matCost || 0) + (b.addCost || 0), 0);
+                const cmpl = bags.filter(b => b.status === 'Completed' || b.status === 'Sold').length;
+                const rev = bags.reduce((s, b) => s + (b.sales || 0), 0);
+                return `<div class="card"><div class="card-title">${c.name}</div>${c.desc ? `<p style="margin-bottom: 15px;">${c.desc}</p>` : ''}<table style="margin: 0;"><tr><td><strong>Bags:</strong></td><td>${bags.length}</td></tr><tr><td><strong>Completed:</strong></td><td>${cmpl}</td></tr><tr><td><strong>Hours:</strong></td><td>${h.toFixed(1)}h</td></tr><tr><td><strong>Expenses:</strong></td><td>€${cst.toFixed(2)}</td></tr><tr><td><strong>Revenue:</strong></td><td>€${rev.toFixed(2)}</td></tr></table></div>`;
+            }).join('') : '<div class="empty-state"><div class="empty-state-icon">📚</div><div class="empty-state-title">No collections</div></div>';
+
+            // Inventory
+            document.getElementById('invList').innerHTML = app.inventory.length > 0 ? app.inventory.map(m => `<div class="card"><div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><div><div class="card-title" style="margin: 0; border: none; padding: 0;">${m.name}</div><div style="font-size: 12px; color: var(--sage); margin-top: 5px;">${m.cat}</div></div><span class="badge badge-planned">${m.qty} ${m.unit}</span></div><table style="margin: 0;"><tr><td><strong>Cost/Unit:</strong></td><td>€${m.cost.toFixed(2)}</td></tr><tr><td><strong>Total Value:</strong></td><td>€${(m.qty * m.cost).toFixed(2)}</td></tr></table></div>`).join('') : '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-title">No materials</div></div>';
+
+            // Analytics
+            const timePerBag = app.bags.filter(b => (b.hours || 0) > 0).sort((a, b) => (b.hours || 0) - (a.hours || 0));
+            document.getElementById('timePerBag').innerHTML = timePerBag.length > 0 ? `<table><tr><th>Bag</th><th>Hours</th><th>Sessions</th></tr>${timePerBag.map(b => `<tr><td>${b.name}</td><td>${(b.hours || 0).toFixed(1)}h</td><td>${b.sessions || 0}</td></tr>`).join('')}</table>` : '<div class="empty-state-text">No data</div>';
+
+            const avgH = app.bags.length > 0 ? hours / app.bags.filter(b => (b.hours || 0) > 0).length : 0;
+            const avgS = app.productions.length > 0 ? hours / app.productions.length : 0;
+            const mostT = timePerBag[0]?.name || '—';
+            const acts = {};
+            app.productions.forEach(p => { acts[p.activity] = (acts[p.activity] || 0) + 1; });
+            const mostA = Object.keys(acts).reduce((a, b) => (acts[a] || 0) >= (acts[b] || 0) ? a : b, '—');
+
+            document.getElementById('m1').textContent = avgH.toFixed(1);
+            document.getElementById('m2').textContent = avgS.toFixed(1);
+            document.getElementById('m3').textContent = mostT;
+            document.getElementById('m4').textContent = mostA;
+
+            // Financial table
+            document.getElementById('profTable').innerHTML = app.bags.length > 0 ? `<table><tr><th>Bag</th><th>Total Cost</th><th>Suggested</th><th>Actual Sales</th><th>Profit</th></tr>${app.bags.map(b => {
+                const c = (b.matCost || 0) + (b.addCost || 0) + ((b.hours || 0) * rate);
+                const prof = (b.sales || 0) - c;
+                return `<tr style="background: ${prof >= 0 ? '#E8F5F1' : '#FDF1ED'};"><td>${b.name}</td><td>€${c.toFixed(2)}</td><td>€${(c * (1 + margin/100)).toFixed(2)}</td><td>€${(b.sales || 0).toFixed(2)}</td><td style="color: ${prof >= 0 ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">€${prof.toFixed(2)}</td></tr>`;
+            }).join('')}</table>` : '<div class="empty-state-text">No bags</div>';
 
             // Charts
-            drawWeeklyChart();
+            drawCharts();
         }
 
-        // PRODUCTION LIST
-        function updateProductionList() {
-            const sorted = data.productions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            const select = document.getElementById('prodBag');
-            select.innerHTML = '<option value="">-- Select a bag --</option>';
-            data.bags.forEach(b => {
-                const option = document.createElement('option');
-                option.value = b.id;
-                option.textContent = b.name;
-                select.appendChild(option);
+        function drawCharts() {
+            const rate = parseFloat(document.getElementById('fRate')?.value || app.settings.rate);
+            
+            // Weekly
+            const weeks = {};
+            app.productions.forEach(p => {
+                const d = new Date(p.date);
+                const w = `W${Math.ceil(d.getDate() / 7)}`;
+                weeks[w] = (weeks[w] || 0) + p.hours;
             });
 
-            document.getElementById('productionList').innerHTML = sorted.length > 0 ?
-                sorted.map(p => {
-                    const bag = data.bags.find(b => b.id === p.bagId);
-                    return `
-                        <div class="entry-item">
-                            <div class="entry-header">
-                                <div>
-                                    <div class="entry-title">${bag ? bag.name : 'Unknown Bag'} - ${p.activity}</div>
-                                    <div class="entry-date">${new Date(p.date).toLocaleDateString()}</div>
-                                </div>
-                                <button class="btn-small btn-danger" onclick="deleteProduction('${p.id}')">Delete</button>
-                            </div>
-                            <div class="entry-details">
-                                ${p.hours}h worked • €${(p.materialCost + p.additionalCost).toFixed(2)} spent • ${p.progress}% progress<br>
-                                ${p.notes ? `<em>${p.notes}</em>` : ''}
-                            </div>
-                        </div>
-                    `;
-                }).join('') : '<p style="color: var(--sage);">No production entries yet</p>';
-        }
+            const ctx1 = document.getElementById('chart1');
+            if (ctx1 && window.c1) window.c1.destroy();
+            if (ctx1) window.c1 = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(weeks),
+                    datasets: [{ label: 'Hours', data: Object.values(weeks), borderColor: 'var(--forest-green)', backgroundColor: 'rgba(25, 61, 48, 0.05)', tension: 0.3, fill: true, borderWidth: 2 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
 
-        function deleteProduction(id) {
-            if (confirm('Delete this entry?')) {
-                const entry = data.productions.find(p => p.id == id);
-                if (entry) {
-                    const bag = data.bags.find(b => b.id === entry.bagId);
-                    if (bag) {
-                        bag.productionHours = Math.max(0, (bag.productionHours || 0) - entry.hours);
-                        bag.materialExpenses = Math.max(0, (bag.materialExpenses || 0) - entry.materialCost);
-                        bag.additionalExpenses = Math.max(0, (bag.additionalExpenses || 0) - entry.additionalCost);
-                    }
+            const ctx2 = document.getElementById('chart2');
+            if (ctx2 && window.c2) window.c2.destroy();
+            if (ctx2) window.c2 = new Chart(ctx2, {
+                type: 'bar',
+                data: { labels: Object.keys(weeks), datasets: [{ label: 'Hours', data: Object.values(weeks), backgroundColor: 'var(--forest-green)', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            // Activity
+            const acts = {};
+            app.productions.forEach(p => { acts[p.activity] = (acts[p.activity] || 0) + 1; });
+
+            const ctx3 = document.getElementById('chart3');
+            if (ctx3 && window.c3) window.c3.destroy();
+            if (ctx3) window.c3 = new Chart(ctx3, {
+                type: 'doughnut',
+                data: { labels: Object.keys(acts), datasets: [{ data: Object.values(acts), backgroundColor: ['var(--forest-green)', 'var(--sage)', 'var(--beige)', 'var(--charcoal)', 'var(--warning)'] }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Revenue
+            const months = {};
+            app.bags.forEach(b => {
+                if (b.startDate && b.sales) {
+                    const d = new Date(b.startDate);
+                    const m = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                    months[m] = (months[m] || 0) + b.sales;
                 }
-                data.productions = data.productions.filter(p => p.id != id);
-                saveData();
-            }
-        }
-
-        // BAGS LIST
-        function updateBagsList() {
-            const bagsHtml = data.bags.map(b => {
-                const totalCost = (b.materialExpenses || 0) + (b.additionalExpenses || 0) + ((b.productionHours || 0) * data.settings.hourlyRate);
-                const suggestedPrice = totalCost * (1 + data.settings.profitMargin / 100);
-                const profit = (b.actualSales || 0) - totalCost;
-
-                return `
-                    <div class="section-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                            <div class="section-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">${b.name}</div>
-                            <span class="badge ${b.status === 'Sold' ? 'badge-success' : b.status === 'Completed' ? 'badge-success' : 'badge-in-progress'}">${b.status}</span>
-                        </div>
-                        <table>
-                            <tr>
-                                <td><strong>Production Hours:</strong></td>
-                                <td>${(b.productionHours || 0).toFixed(1)}h</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Material Expenses:</strong></td>
-                                <td>€${(b.materialExpenses || 0).toFixed(2)}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Additional Expenses:</strong></td>
-                                <td>€${(b.additionalExpenses || 0).toFixed(2)}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Labour Value:</strong></td>
-                                <td>€${((b.productionHours || 0) * data.settings.hourlyRate).toFixed(2)}</td>
-                            </tr>
-                            <tr style="border-top: 2px solid var(--light-border);">
-                                <td><strong>Total Cost:</strong></td>
-                                <td><strong>€${totalCost.toFixed(2)}</strong></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Suggested Price:</strong></td>
-                                <td>€${suggestedPrice.toFixed(2)}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Actual Sales:</strong></td>
-                                <td>€${(b.actualSales || 0).toFixed(2)}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Profit:</strong></td>
-                                <td style="color: ${profit >= 0 ? '#1b4332' : '#a84028'};"><strong>€${profit.toFixed(2)}</strong></td>
-                            </tr>
-                        </table>
-                        ${b.notes ? `<p style="margin-top: 15px; font-size: 13px; color: var(--sage);">${b.notes}</p>` : ''}
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('bagsList').innerHTML = bagsHtml || '<div class="section-card"><p style="color: var(--sage);">No bags yet. Create one to get started!</p></div>';
-        }
-
-        // COLLECTIONS LIST
-        function updateCollectionsList() {
-            const collectionsHtml = data.collections.map(c => {
-                const bagCount = data.bags.filter(b => b.collection === c.id).length;
-                return `
-                    <div class="section-card">
-                        <div class="section-title">${c.name}</div>
-                        <p style="color: var(--sage); margin-bottom: 15px;">${bagCount} bag${bagCount !== 1 ? 's' : ''}</p>
-                        ${c.description ? `<p>${c.description}</p>` : ''}
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('collectionsList').innerHTML = collectionsHtml || '<div class="section-card"><p style="color: var(--sage);">No collections yet.</p></div>';
-        }
-
-        // INVENTORY LIST
-        function updateInventoryList() {
-            const inventoryHtml = data.inventory.map(m => `
-                <div class="section-card">
-                    <div class="entry-header">
-                        <div class="entry-title">${m.name}</div>
-                        <span class="badge badge-pending">${m.type}</span>
-                    </div>
-                    <div class="entry-details">
-                        ${m.quantity} ${m.unit} • €${m.costPerUnit.toFixed(2)}/${m.unit}
-                    </div>
-                </div>
-            `).join('');
-
-            document.getElementById('inventoryList').innerHTML = inventoryHtml || '<div class="section-card"><p style="color: var(--sage);">No materials yet.</p></div>';
-        }
-
-        // ANALYTICS
-        function updateAnalytics() {
-            // Time per bag
-            const timePerBag = data.bags.map(b => ({
-                name: b.name,
-                hours: b.productionHours || 0
-            })).filter(b => b.hours > 0).sort((a, b) => b.hours - a.hours);
-
-            document.getElementById('timePerBag').innerHTML = timePerBag.length > 0 ?
-                `<table>${timePerBag.map(b => `<tr><td>${b.name}</td><td>${b.hours.toFixed(1)}h</td></tr>`).join('')}</table>` :
-                '<p style="color: var(--sage);">No data yet</p>';
-
-            // Draw charts
-            drawHoursChart();
-            drawActivityChart();
-            drawCollectionChart();
-        }
-
-        // FINANCIAL
-        function updateFinancials() {
-            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 15;
-            const profitMargin = parseInt(document.getElementById('profitMargin').value) || 30;
-            data.settings.hourlyRate = hourlyRate;
-            data.settings.profitMargin = profitMargin;
-
-            const totalHours = data.productions.reduce((s, p) => s + p.hours, 0);
-            const totalMaterialCost = data.bags.reduce((s, b) => s + (b.materialExpenses || 0), 0);
-            const totalAdditionalCost = data.bags.reduce((s, b) => s + (b.additionalExpenses || 0), 0);
-            const totalCost = totalMaterialCost + totalAdditionalCost;
-            const labourValue = totalHours * hourlyRate;
-            const totalRevenue = data.bags.reduce((s, b) => s + (b.actualSales || 0), 0);
-            const profit = totalRevenue - totalCost - labourValue;
-
-            document.getElementById('totalCost').textContent = totalCost.toFixed(2);
-            document.getElementById('labourValue').textContent = labourValue.toFixed(2);
-            document.getElementById('finRevenue').textContent = totalRevenue.toFixed(2);
-            document.getElementById('profit').textContent = profit.toFixed(2);
-
-            // Profitability table
-            const profitTable = data.bags.map(b => {
-                const bagCost = (b.materialExpenses || 0) + (b.additionalExpenses || 0) + ((b.productionHours || 0) * hourlyRate);
-                const bagProfit = (b.actualSales || 0) - bagCost;
-                const suggestedPrice = bagCost * (1 + profitMargin / 100);
-
-                return `
-                    <tr style="background: ${bagProfit >= 0 ? '#f0f9f6' : '#fef4f0'};">
-                        <td>${b.name}</td>
-                        <td>€${bagCost.toFixed(2)}</td>
-                        <td>€${suggestedPrice.toFixed(2)}</td>
-                        <td>€${(b.actualSales || 0).toFixed(2)}</td>
-                        <td style="color: ${bagProfit >= 0 ? '#1b4332' : '#a84028'};"><strong>€${bagProfit.toFixed(2)}</strong></td>
-                    </tr>
-                `;
-            }).join('');
-
-            document.getElementById('profitabilityTable').innerHTML = `
-                <table>
-                    <tr>
-                        <th>Bag</th>
-                        <th>Total Cost</th>
-                        <th>Suggested Price</th>
-                        <th>Actual Sales</th>
-                        <th>Profit</th>
-                    </tr>
-                    ${profitTable}
-                </table>
-            `;
-
-            drawRevenueChart();
-        }
-
-        // REPORTS
-        function generateReport() {
-            const type = document.getElementById('reportType').value;
-            let html = '';
-
-            if (type === 'weekly') {
-                html = '<h3 style="margin: 15px 0; color: var(--forest-green);">Weekly Summary</h3>';
-                const weeks = {};
-                data.productions.forEach(p => {
-                    const date = new Date(p.date);
-                    const week = Math.ceil((date.getDate()) / 7);
-                    const key = `${date.getFullYear()}-W${week}`;
-                    if (!weeks[key]) weeks[key] = { hours: 0, cost: 0, entries: 0 };
-                    weeks[key].hours += p.hours;
-                    weeks[key].cost += p.materialCost + p.additionalCost;
-                    weeks[key].entries += 1;
-                });
-
-                html += '<table>';
-                html += '<tr><th>Week</th><th>Entries</th><th>Hours</th><th>Expenses</th></tr>';
-                Object.entries(weeks).forEach(([week, w]) => {
-                    html += `<tr><td>${week}</td><td>${w.entries}</td><td>${w.hours.toFixed(1)}h</td><td>€${w.cost.toFixed(2)}</td></tr>`;
-                });
-                html += '</table>';
-            }
-
-            document.getElementById('reportContent').innerHTML = html;
-        }
-
-        function updateReports() {
-            generateReport();
-        }
-
-        // EXPORT/IMPORT
-        function exportJSON() {
-            const json = JSON.stringify(data, null, 2);
-            downloadFile(json, 'remade-studio-backup.json', 'application/json');
-        }
-
-        function exportCSV() {
-            let csv = 'Date,Bag,Activity,Hours,Material Cost,Additional Cost,Notes\n';
-            data.productions.forEach(p => {
-                const bag = data.bags.find(b => b.id === p.bagId);
-                csv += `"${p.date}","${bag ? bag.name : 'Unknown'}","${p.activity}",${p.hours},${p.materialCost},${p.additionalCost},"${p.notes}"\n`;
             });
-            downloadFile(csv, 'remade-studio-production.csv', 'text/csv');
+
+            const ctx4 = document.getElementById('chart4');
+            if (ctx4 && window.c4) window.c4.destroy();
+            if (ctx4) window.c4 = new Chart(ctx4, {
+                type: 'bar',
+                data: { labels: Object.keys(months), datasets: [{ label: 'Revenue', data: Object.values(months), backgroundColor: 'var(--success)', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
         }
 
-        function downloadFile(content, filename, type) {
-            const blob = new Blob([content], { type });
-            const url = URL.createObjectURL(blob);
+        function genReport() {
+            const t = document.getElementById('repType').value;
+            let html = '';
+            if (t === 'weekly') {
+                const w = {};
+                app.productions.forEach(p => {
+                    const d = new Date(p.date);
+                    const wk = `W${Math.ceil(d.getDate() / 7)}`;
+                    if (!w[wk]) w[wk] = { entries: 0, hours: 0, cost: 0 };
+                    w[wk].entries += 1;
+                    w[wk].hours += p.hours;
+                    w[wk].cost += p.matCost + p.addCost;
+                });
+                html = '<table><tr><th>Week</th><th>Entries</th><th>Hours</th><th>Cost</th></tr>' + Object.entries(w).map(([wk, d]) => `<tr><td>${wk}</td><td>${d.entries}</td><td>${d.hours.toFixed(1)}h</td><td>€${d.cost.toFixed(2)}</td></tr>`).join('') + '</table>';
+            } else if (t === 'production') {
+                const s = app.productions.sort((a, b) => new Date(b.date) - new Date(a.date));
+                html = '<table><tr><th>Date</th><th>Bag</th><th>Activity</th><th>Hours</th><th>Cost</th></tr>' + s.map(p => {
+                    const b = app.bags.find(x => x.id === p.bagId);
+                    return `<tr><td>${new Date(p.date).toLocaleDateString()}</td><td>${b?.name || '—'}</td><td>${p.activity}</td><td>${p.hours.toFixed(1)}h</td><td>€${(p.matCost + p.addCost).toFixed(2)}</td></tr>`;
+                }).join('') + '</table>';
+            } else if (t === 'financial') {
+                const rate = parseFloat(document.getElementById('fRate')?.value || app.settings.rate);
+                const h = app.productions.reduce((s, p) => s + p.hours, 0);
+                const m = app.bags.reduce((s, b) => s + (b.matCost || 0), 0);
+                const a = app.bags.reduce((s, b) => s + (b.addCost || 0), 0);
+                const l = h * rate;
+                html = `<table><tr><td>Total Hours</td><td>${h.toFixed(1)}h</td></tr><tr><td>Material Costs</td><td>€${m.toFixed(2)}</td></tr><tr><td>Additional Costs</td><td>€${a.toFixed(2)}</td></tr><tr><td>Labour Value</td><td>€${l.toFixed(2)}</td></tr><tr><td>Total Production Cost</td><td>€${(m + a + l).toFixed(2)}</td></tr><tr><td>Total Revenue</td><td>€${app.bags.reduce((s, b) => s + (b.sales || 0), 0).toFixed(2)}</td></tr></table>`;
+            }
+            document.getElementById('repOut').innerHTML = html || '<p style="color: var(--sage);">No data</p>';
+        }
+
+        function expJSON() { downloadFile(JSON.stringify(app, null, 2), 'remade-backup.json', 'application/json'); }
+        function expCSV() {
+            let csv = 'Date,Bag,Activity,Hours,Material Cost,Additional Cost,Notes\n';
+            app.productions.forEach(p => {
+                const b = app.bags.find(x => x.id === p.bagId);
+                csv += `"${p.date}","${b?.name || '—'}","${p.activity}",${p.hours},${p.matCost},${p.addCost},"${p.notes}"\n`;
+            });
+            downloadFile(csv, 'remade-production.csv', 'text/csv');
+        }
+
+        function downloadFile(c, fn, t) {
+            const b = new Blob([c], { type: t });
+            const u = URL.createObjectURL(b);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
+            a.href = u;
+            a.download = fn;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(u);
         }
 
-        function restoreData() {
-            const file = document.getElementById('restoreFile').files[0];
-            if (!file) {
-                showMessage('dashMessage', 'Select a file first', 'error');
-                return;
-            }
+        function exportData() { expJSON(); }
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
+        function restData() {
+            const f = document.getElementById('restFile').files[0] || document.getElementById('restFile2').files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = (e) => {
                 try {
-                    const restored = JSON.parse(e.target.result);
-                    Object.assign(data, restored);
-                    localStorage.setItem('remadeStudioData', JSON.stringify(data));
-                    updateAllDisplays();
-                    showMessage('dashMessage', 'Data restored!', 'success');
-                } catch {
-                    showMessage('dashMessage', 'Invalid file', 'error');
-                }
+                    const d = JSON.parse(e.target.result);
+                    Object.assign(app, d);
+                    save();
+                    updateAll();
+                } catch(err) {}
             };
-            reader.readAsText(file);
+            r.readAsText(f);
         }
 
-        function clearAllData() {
-            if (confirm('Delete ALL data? This cannot be undone!')) {
-                if (confirm('Are you absolutely sure?')) {
-                    data.bags = [];
-                    data.productions = [];
-                    data.collections = [];
-                    data.inventory = [];
-                    localStorage.removeItem('remadeStudioData');
-                    updateAllDisplays();
-                    showMessage('dashMessage', 'All data cleared', 'success');
-                }
-            }
+        function savSet() {
+            app.settings.rate = parseFloat(document.getElementById('setRate').value);
+            app.settings.margin = parseInt(document.getElementById('setMargin').value);
+            save();
+            updateAll();
         }
 
-        function saveSettings() {
-            data.settings.hourlyRate = parseFloat(document.getElementById('settingsHourlyRate').value) || 15;
-            data.settings.profitMargin = parseInt(document.getElementById('settingsProfitMargin').value) || 30;
-            localStorage.setItem('remadeStudioData', JSON.stringify(data));
-            updateFinancials();
-        }
-
-        // MESSAGES
-        function showMessage(id, msg, type) {
-            const el = document.getElementById(id);
-            el.innerHTML = `<div class="message ${type}">${msg}</div>`;
-            if (type === 'success') setTimeout(() => el.innerHTML = '', 3000);
-        }
-
-        // CHARTS
-        let weeklyChartInstance, hoursChartInstance, activityChartInstance, collectionChartInstance, revenueChartInstance;
-
-        function drawWeeklyChart() {
-            const ctx = document.getElementById('weeklyChart');
-            if (!ctx) return;
-
-            const weeks = {};
-            data.productions.forEach(p => {
-                const date = new Date(p.date);
-                const week = `W${Math.ceil((date.getDate()) / 7)}`;
-                weeks[week] = (weeks[week] || 0) + p.hours;
-            });
-
-            if (weeklyChartInstance) weeklyChartInstance.destroy();
-            weeklyChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(weeks),
-                    datasets: [{
-                        label: 'Hours Worked',
-                        data: Object.values(weeks),
-                        backgroundColor: '#6b9080',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
-
-        function drawHoursChart() {
-            const ctx = document.getElementById('hoursChart');
-            if (!ctx) return;
-
-            const weeks = {};
-            data.productions.forEach(p => {
-                const date = new Date(p.date);
-                const week = `${date.getFullYear()}-W${Math.ceil((date.getDate()) / 7)}`;
-                weeks[week] = (weeks[week] || 0) + p.hours;
-            });
-
-            if (hoursChartInstance) hoursChartInstance.destroy();
-            hoursChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Object.keys(weeks),
-                    datasets: [{
-                        label: 'Hours per Week',
-                        data: Object.values(weeks),
-                        borderColor: '#1b4332',
-                        backgroundColor: 'rgba(27, 67, 50, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: true } }
-                }
-            });
-        }
-
-        function drawActivityChart() {
-            const ctx = document.getElementById('activityChart');
-            if (!ctx) return;
-
-            const activities = {};
-            data.productions.forEach(p => {
-                activities[p.activity] = (activities[p.activity] || 0) + 1;
-            });
-
-            if (activityChartInstance) activityChartInstance.destroy();
-            activityChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(activities),
-                    datasets: [{
-                        data: Object.values(activities),
-                        backgroundColor: ['#1b4332', '#6b9080', '#d4a574', '#fef9f3', '#2a2a2a']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-        }
-
-        function drawCollectionChart() {
-            const ctx = document.getElementById('collectionChart');
-            if (!ctx) return;
-
-            const collections = {};
-            data.bags.forEach(b => {
-                const collName = data.collections.find(c => c.id === b.collection)?.name || 'Uncategorized';
-                collections[collName] = (collections[collName] || 0) + 1;
-            });
-
-            if (collectionChartInstance) collectionChartInstance.destroy();
-            collectionChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(collections),
-                    datasets: [{
-                        label: 'Bags per Collection',
-                        data: Object.values(collections),
-                        backgroundColor: '#d4a574'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y'
-                }
-            });
-        }
-
-        function drawRevenueChart() {
-            const ctx = document.getElementById('revenueChart');
-            if (!ctx) return;
-
-            const months = {};
-            data.bags.forEach(b => {
-                if (b.actualSales && b.completionDate) {
-                    const date = new Date(b.completionDate);
-                    const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                    months[month] = (months[month] || 0) + b.actualSales;
-                }
-            });
-
-            if (revenueChartInstance) revenueChartInstance.destroy();
-            revenueChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Object.keys(months),
-                    datasets: [{
-                        label: 'Monthly Revenue (EUR)',
-                        data: Object.values(months),
-                        borderColor: '#1b4332',
-                        backgroundColor: 'rgba(27, 67, 50, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-        }
-
-        // INITIALIZE
-        loadData();
+        init();
     </script>
 </body>
 </html>
