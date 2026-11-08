@@ -289,6 +289,8 @@
 
     <script>
         // FIREBASE
+        let db = null;
+        
         const firebaseConfig = {
             apiKey: "AIzaSyAosZ98kbQPTtCf_P6U71gmUa-zfyx0p0A",
             authDomain: "remade-studio.firebaseapp.com",
@@ -297,8 +299,13 @@
             messagingSenderId: "890904163393",
             appId: "1:890904163393:web:75ee8d452ba293e94ac2c0"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } catch (e) {
+            console.error('Firebase init error:', e);
+        }
 
         const app = { bags: [], collections: [], productions: [] };
 
