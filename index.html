@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReMade Studio — Production Management</title>
+    <title>ReMade Studio — Creative Production Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js"></script>
     <style>
         * {
             margin: 0;
@@ -47,7 +51,7 @@
 
         /* SIDEBAR */
         .sidebar {
-            width: 260px;
+            width: 280px;
             background: var(--white);
             border-right: 1px solid var(--border);
             padding: 40px 25px;
@@ -80,6 +84,7 @@
 
         .nav-list {
             list-style: none;
+            flex: 1;
         }
 
         .nav-item {
@@ -120,7 +125,7 @@
 
         /* MAIN CONTENT */
         .main-area {
-            margin-left: 260px;
+            margin-left: 280px;
             flex: 1;
             background: var(--cream);
             padding: 50px;
@@ -213,7 +218,6 @@
             border-radius: 10px;
             padding: 30px;
             margin-bottom: 30px;
-            transition: all 0.2s ease;
         }
 
         .card-title {
@@ -224,50 +228,6 @@
             margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 1px solid var(--border);
-        }
-
-        .entry-item {
-            padding: 20px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 15px;
-            background: var(--light-bg);
-            transition: all 0.2s ease;
-        }
-
-        .entry-item:hover {
-            border-color: var(--sage);
-            background: var(--white);
-        }
-
-        .entry-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .entry-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--charcoal);
-        }
-
-        .entry-date {
-            font-size: 12px;
-            color: var(--sage);
-            font-weight: 500;
-        }
-
-        .entry-details {
-            font-size: 13px;
-            color: var(--charcoal);
-            line-height: 1.6;
-        }
-
-        .entry-details span {
-            color: var(--sage);
-            margin-right: 12px;
         }
 
         /* FORMS */
@@ -297,19 +257,10 @@
             background: var(--white);
         }
 
-        input::placeholder, textarea::placeholder {
-            color: var(--sage);
-        }
-
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--forest-green);
             box-shadow: 0 0 0 3px rgba(25, 61, 48, 0.08);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
         }
 
         .form-row {
@@ -350,16 +301,6 @@
 
         .btn-secondary:hover {
             background: var(--beige);
-            border-color: var(--sage);
-        }
-
-        .btn-danger {
-            background: var(--error);
-            color: var(--white);
-        }
-
-        .btn-danger:hover {
-            background: #B84A37;
         }
 
         .btn-small {
@@ -391,21 +332,6 @@
             font-size: 13px;
         }
 
-        tr:hover {
-            background: var(--light-bg);
-        }
-
-        /* CHARTS */
-        .chart-container {
-            position: relative;
-            height: 350px;
-            margin: 30px 0;
-            padding: 20px;
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-        }
-
         /* MESSAGES */
         .message {
             padding: 15px 20px;
@@ -414,11 +340,6 @@
             font-size: 13px;
             border-left: 4px solid;
             animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(-20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
         }
 
         .message.success {
@@ -439,30 +360,15 @@
             border-color: var(--sage);
         }
 
-        /* BADGES */
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .badge-completed {
-            background: #E8F5F1;
-            color: var(--success);
-        }
-
-        .badge-in-progress {
-            background: #FEF4ED;
-            color: var(--warning);
-        }
-
-        .badge-planned {
-            background: #F5F2ED;
-            color: var(--charcoal);
+        /* CHART */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
         }
 
         /* EMPTY STATE */
@@ -470,12 +376,6 @@
             padding: 60px 40px;
             text-align: center;
             color: var(--sage);
-        }
-
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-            opacity: 0.5;
         }
 
         .empty-state-title {
@@ -486,77 +386,13 @@
             font-weight: 600;
         }
 
-        .empty-state-text {
-            font-size: 14px;
-            color: var(--sage);
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        /* MODAL */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--white);
-            padding: 40px;
-            border-radius: 12px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .modal-header {
-            font-family: 'Crimson Text', Georgia, serif;
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 25px;
-            color: var(--charcoal);
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--sage);
-        }
-
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .app-wrapper { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: static; padding: 20px; flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-            .sidebar-logo { font-size: 20px; }
-            .nav-list { display: flex; flex-wrap: wrap; gap: 10px; }
-            .nav-item { margin-bottom: 0; }
-            .nav-link { padding: 8px 12px; font-size: 12px; white-space: nowrap; }
-            .sidebar-footer { display: none; }
+            .sidebar { width: 100%; height: auto; position: static; padding: 20px; flex-direction: row; }
             .main-area { margin-left: 0; padding: 20px; }
             .page-title { font-size: 28px; }
             .stats-grid { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
-            .entry-header { flex-direction: column; gap: 8px; }
         }
     </style>
 </head>
@@ -569,23 +405,28 @@
                 <div class="sidebar-tagline">Studio</div>
             </div>
 
-            <nav style="flex: 1;">
+            <nav>
                 <ul class="nav-list">
                     <li class="nav-item"><a class="nav-link active" onclick="switchPage('overview')">Overview</a></li>
                     <li class="nav-item"><a class="nav-link" onclick="switchPage('production')">Production Log</a></li>
                     <li class="nav-item"><a class="nav-link" onclick="switchPage('bags')">My Bags</a></li>
                     <li class="nav-item"><a class="nav-link" onclick="switchPage('collections')">Collections</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('design')">Design Lab</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('journal')">Creative Journal</a></li>
                     <li class="nav-item"><a class="nav-link" onclick="switchPage('inventory')">Materials</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('calendar')">Calendar</a></li>
                     <li class="nav-item"><a class="nav-link" onclick="switchPage('analytics')">Analytics</a></li>
                     <li class="nav-item"><a class="nav-link" onclick="switchPage('financial')">Financial</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('marketing')">Brand & Marketing</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="switchPage('archive')">Archive</a></li>
                     <li class="nav-item"><a class="nav-link" onclick="switchPage('reports')">Reports</a></li>
                     <li class="nav-item"><a class="nav-link" onclick="switchPage('settings')">Settings</a></li>
                 </ul>
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" onclick="exportData(); return false;">Backup</a>
-                <a href="#" onclick="alert('ReMade Studio v1.0'); return false;">About</a>
+                <p>ReMade Studio v2.0</p>
+                <p style="margin-top: 8px; font-size: 10px;">Powered by Firebase</p>
             </div>
         </div>
 
@@ -608,7 +449,7 @@
                     <div class="stat-card"><div class="stat-label">Total Expenses</div><div class="stat-value">€<span id="s5">0.00</span></div></div>
                     <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value">€<span id="s6">0.00</span></div></div>
                     <div class="stat-card"><div class="stat-label">Avg Time per Bag</div><div class="stat-value"><span id="s7">0</span><span class="stat-unit">h</span></div></div>
-                    <div class="stat-card"><div class="stat-label">Profit</div><div class="stat-value">€<span id="s8">0.00</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Inventory Value</div><div class="stat-value">€<span id="s8">0.00</span></div></div>
                 </div>
 
                 <div class="card">
@@ -624,6 +465,16 @@
                 <div class="card">
                     <div class="card-title">Current Projects</div>
                     <div id="projects"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Quick Actions</div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn-primary" onclick="switchPage('production')">+ Add Production Entry</button>
+                        <button class="btn-secondary" onclick="switchPage('bags')">+ Create New Bag</button>
+                        <button class="btn-secondary" onclick="switchPage('design')">+ Create Design Concept</button>
+                        <button class="btn-secondary" onclick="switchPage('inventory')">+ Add Material</button>
+                    </div>
                 </div>
             </div>
 
@@ -646,7 +497,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Bag</label>
-                                <select id="pBag" required><option>Select bag</option></select>
+                                <select id="pBag" required><option>Select a bag</option></select>
                             </div>
                         </div>
                         <div class="form-row">
@@ -671,6 +522,7 @@
                                 <option>Printing</option>
                                 <option>Assembling</option>
                                 <option>Finishing</option>
+                                <option>Photography</option>
                                 <option>Other</option>
                             </select>
                         </div>
@@ -701,7 +553,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-title">History</div>
+                    <div class="card-title">Production History</div>
                     <div id="prodHist"></div>
                 </div>
             </div>
@@ -726,51 +578,120 @@
                 <div id="collList"></div>
             </div>
 
-            <!-- INVENTORY -->
+            <!-- DESIGN LAB -->
+            <div id="design" class="page">
+                <div class="page-header">
+                    <div class="page-title">Design Lab</div>
+                    <div class="page-subtitle">Creative workspace for new ideas</div>
+                </div>
+                <button class="btn-primary" style="margin-bottom: 30px;" onclick="openDesignModal()">+ New Design Concept</button>
+                <div id="designList"></div>
+            </div>
+
+            <!-- CREATIVE JOURNAL -->
+            <div id="journal" class="page">
+                <div class="page-header">
+                    <div class="page-title">Creative Journal</div>
+                    <div class="page-subtitle">Document your creative journey</div>
+                </div>
+                <button class="btn-primary" style="margin-bottom: 30px;" onclick="openJournalModal()">+ New Journal Entry</button>
+                <div id="journalList"></div>
+            </div>
+
+            <!-- MATERIALS & INVENTORY -->
             <div id="inventory" class="page">
                 <div class="page-header">
                     <div class="page-title">Materials & Inventory</div>
-                    <div class="page-subtitle">Track your supplies and materials</div>
+                    <div class="page-subtitle">Track your supplies</div>
                 </div>
                 <button class="btn-primary" style="margin-bottom: 30px;" onclick="openInvModal()">+ Add Material</button>
                 <div id="invList"></div>
             </div>
 
+            <!-- CALENDAR -->
+            <div id="calendar" class="page">
+                <div class="page-header">
+                    <div class="page-title">Work Calendar</div>
+                    <div class="page-subtitle">Organize your production schedule</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Calendar</div>
+                    <p style="color: var(--sage);">Calendar view coming soon - track production sessions, deadlines, and launches.</p>
+                </div>
+            </div>
+
             <!-- ANALYTICS -->
             <div id="analytics" class="page">
                 <div class="page-header">
-                    <div class="page-title">Time Analytics</div>
+                    <div class="page-title">Analytics</div>
                     <div class="page-subtitle">Production insights and trends</div>
                 </div>
-                <div class="card"><div class="card-title">Hours by Week</div><div class="chart-container"><canvas id="chart2"></canvas></div></div>
-                <div class="card"><div class="card-title">Activity Breakdown</div><div class="chart-container"><canvas id="chart3"></canvas></div></div>
-                <div class="card"><div class="card-title">Time per Bag</div><div id="timePerBag"></div></div>
-                <div class="card"><div class="card-title">Key Metrics</div><table><tr><td><strong>Avg Hours per Bag:</strong></td><td><span id="m1">0</span>h</td></tr><tr><td><strong>Avg Session:</strong></td><td><span id="m2">0</span>h</td></tr><tr><td><strong>Most Time-Consuming:</strong></td><td><span id="m3">—</span></td></tr><tr><td><strong>Most Frequent Activity:</strong></td><td><span id="m4">—</span></td></tr></table></div>
+                <div class="card">
+                    <div class="card-title">Production Analysis</div>
+                    <div class="chart-container"><canvas id="chartAnalytics"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Key Metrics</div>
+                    <table>
+                        <tr><td><strong>Total Hours:</strong></td><td><span id="m1">0</span>h</td></tr>
+                        <tr><td><strong>Avg per Bag:</strong></td><td><span id="m2">0</span>h</td></tr>
+                        <tr><td><strong>Most Time-Consuming:</strong></td><td><span id="m3">—</span></td></tr>
+                        <tr><td><strong>Most Frequent Activity:</strong></td><td><span id="m4">—</span></td></tr>
+                    </table>
+                </div>
             </div>
 
             <!-- FINANCIAL -->
             <div id="financial" class="page">
                 <div class="page-header">
                     <div class="page-title">Financial Overview</div>
-                    <div class="page-subtitle">Revenue, costs and profitability analysis</div>
+                    <div class="page-subtitle">Revenue, costs and profitability</div>
                 </div>
                 <div class="card">
                     <div class="card-title">Settings</div>
                     <div class="form-row">
-                        <div class="form-group"><label>Hourly Labour Rate (€/h)</label><input type="number" id="fRate" min="0" step="0.01" value="15" onchange="updateAll()"></div>
-                        <div class="form-group"><label>Profit Margin (%)</label><input type="number" id="fMargin" min="0" step="1" value="30" onchange="updateAll()"></div>
+                        <div class="form-group">
+                            <label>Hourly Labour Rate (€/h)</label>
+                            <input type="number" id="fRate" min="0" step="0.01" value="15" onchange="updateAllFirebase()">
+                        </div>
+                        <div class="form-group">
+                            <label>Profit Margin (%)</label>
+                            <input type="number" id="fMargin" min="0" step="1" value="30" onchange="updateAllFirebase()">
+                        </div>
                     </div>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card"><div class="stat-label">Material Costs</div><div class="stat-value">€<span id="f1">0.00</span></div></div>
                     <div class="stat-card"><div class="stat-label">Labour Value</div><div class="stat-value">€<span id="f2">0.00</span></div></div>
-                    <div class="stat-card"><div class="stat-label">Est. Production Cost</div><div class="stat-value">€<span id="f3">0.00</span></div></div>
+                    <div class="stat-card"><div class="stat-label">Est. Cost</div><div class="stat-value">€<span id="f3">0.00</span></div></div>
                     <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value">€<span id="f4">0.00</span></div></div>
-                    <div class="stat-card"><div class="stat-label">Est. Profit</div><div class="stat-value">€<span id="f5">0.00</span></div></div>
-                    <div class="stat-card"><div class="stat-label">Actual Profit</div><div class="stat-value">€<span id="f6">0.00</span></div></div>
                 </div>
-                <div class="card"><div class="card-title">Bag Profitability</div><div id="profTable"></div></div>
-                <div class="card"><div class="card-title">Monthly Revenue</div><div class="chart-container"><canvas id="chart4"></canvas></div></div>
+                <div class="card">
+                    <div class="card-title">Bag Profitability</div>
+                    <div id="profTable"></div>
+                </div>
+            </div>
+
+            <!-- BRAND & MARKETING -->
+            <div id="marketing" class="page">
+                <div class="page-header">
+                    <div class="page-title">Brand & Marketing</div>
+                    <div class="page-subtitle">Social media and product launches</div>
+                </div>
+                <button class="btn-primary" style="margin-bottom: 30px;" onclick="openMarketingModal()">+ Plan Campaign</button>
+                <div class="card">
+                    <div class="card-title">Content Calendar</div>
+                    <div id="marketingList"></div>
+                </div>
+            </div>
+
+            <!-- ARCHIVE -->
+            <div id="archive" class="page">
+                <div class="page-header">
+                    <div class="page-title">ReMade Archive</div>
+                    <div class="page-subtitle">Gallery of completed creations</div>
+                </div>
+                <div id="archiveList"></div>
             </div>
 
             <!-- REPORTS -->
@@ -781,20 +702,20 @@
                 </div>
                 <div class="card">
                     <div class="card-title">Generate Report</div>
-                    <div class="form-group"><label>Report Type</label><select id="repType" onchange="genReport()"><option value="weekly">Weekly Summary</option><option value="production">Production Details</option><option value="financial">Financial Summary</option></select></div>
+                    <div class="form-group">
+                        <label>Report Type</label>
+                        <select id="repType" onchange="genReport()">
+                            <option value="weekly">Weekly Summary</option>
+                            <option value="production">Production Details</option>
+                            <option value="financial">Financial Summary</option>
+                        </select>
+                    </div>
                     <div id="repOut"></div>
                 </div>
                 <div class="card">
                     <div class="card-title">Export Data</div>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn-secondary" onclick="expJSON()">Export JSON</button>
-                        <button class="btn-secondary" onclick="expCSV()">Export CSV</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Backup & Restore</div>
-                    <input type="file" id="restFile" accept=".json" style="margin-bottom: 15px;">
-                    <button class="btn-secondary" onclick="restData()">Restore</button>
+                    <button class="btn-secondary" onclick="expJSON()">Export JSON</button>
+                    <button class="btn-secondary" onclick="expCSV()" style="margin-left: 10px;">Export CSV</button>
                 </div>
             </div>
 
@@ -806,84 +727,127 @@
                 </div>
                 <div class="card">
                     <div class="card-title">Business Settings</div>
-                    <div class="form-group"><label>Business Name</label><input type="text" id="busName" value="ReMade" onchange="savSet()"></div>
+                    <div class="form-group">
+                        <label>Business Name</label>
+                        <input type="text" id="busName" value="ReMade" onchange="saveSettings()">
+                    </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Hourly Rate (€/h)</label><input type="number" id="setRate" min="0" step="0.01" value="15" onchange="savSet()"></div>
-                        <div class="form-group"><label>Profit Margin (%)</label><input type="number" id="setMargin" min="0" step="1" value="30" onchange="savSet()"></div>
+                        <div class="form-group">
+                            <label>Hourly Rate (€/h)</label>
+                            <input type="number" id="setRate" min="0" step="0.01" value="15" onchange="saveSettings()">
+                        </div>
+                        <div class="form-group">
+                            <label>Profit Margin (%)</label>
+                            <input type="number" id="setMargin" min="0" step="1" value="30" onchange="saveSettings()">
+                        </div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-title">Data Management</div>
-                    <button class="btn-secondary" style="margin-right: 10px;" onclick="expJSON()">Download Backup</button>
-                    <button class="btn-secondary" style="margin-right: 10px;" onclick="document.getElementById('restFile2').click()">Restore</button>
-                    <input type="file" id="restFile2" accept=".json" style="display: none;" onchange="restData()">
-                    <button class="btn-danger" style="margin-top: 15px;" onclick="if(confirm('Delete ALL data?')) { if(confirm('Are you sure?')) { app.bags=[]; app.productions=[]; app.collections=[]; app.inventory=[]; save(); updateAll(); } }">Clear All</button>
+                    <button class="btn-secondary" onclick="expJSON()" style="margin-right: 10px;">Backup Data</button>
+                    <button class="btn-secondary" onclick="document.getElementById('restFile').click()">Restore Data</button>
+                    <input type="file" id="restFile" accept=".json" style="display: none;" onchange="restData()">
                 </div>
             </div>
         </div>
     </div>
 
     <!-- MODALS -->
-    <div id="bagMod" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeBagModal()">&times;</button>
-            <div class="modal-header">New Bag</div>
+    <div id="bagMod" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 40px; border-radius: 12px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+            <h2 style="font-family: 'Crimson Text', serif; font-size: 28px; margin-bottom: 25px;">New Bag</h2>
             <form id="bagFrm">
-                <div class="form-group"><label>Bag Name *</label><input type="text" id="bagNm" required></div>
+                <div class="form-group"><label>Bag Name</label><input type="text" id="bagNm" required></div>
                 <div class="form-group"><label>Collection</label><select id="bagCol"><option>None</option></select></div>
                 <div class="form-row">
                     <div class="form-group"><label>Start Date</label><input type="date" id="bagSt"></div>
-                    <div class="form-group"><label>Status</label><select id="bagSts"><option>Planned</option><option>Not Started</option><option>In Progress</option><option>Almost Finished</option><option>Completed</option><option>Sold</option></select></div>
+                    <div class="form-group"><label>Status</label><select id="bagSts"><option>Planned</option><option>In Progress</option><option>Completed</option></select></div>
                 </div>
                 <div class="form-group"><label>Description</label><textarea id="bagDesc"></textarea></div>
-                <div class="form-group"><label>Notes</label><textarea id="bagNts"></textarea></div>
                 <button type="submit" class="btn-primary">Create</button>
             </form>
-        </div>
-    </div>
-
-    <div id="collMod" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeCollModal()">&times;</button>
-            <div class="modal-header">New Collection</div>
-            <form id="collFrm">
-                <div class="form-group"><label>Name *</label><input type="text" id="collNm" required></div>
-                <div class="form-group"><label>Description</label><textarea id="collDesc"></textarea></div>
-                <button type="submit" class="btn-primary">Create</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="invMod" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeInvModal()">&times;</button>
-            <div class="modal-header">Add Material</div>
-            <form id="invFrm">
-                <div class="form-group"><label>Name *</label><input type="text" id="matNm" required></div>
-                <div class="form-row">
-                    <div class="form-group"><label>Category</label><select id="matCat"><option>Fabric</option><option>Thread</option><option>Hardware</option><option>Yarn</option><option>Other</option></select></div>
-                    <div class="form-group"><label>Quantity</label><input type="number" id="matQty" step="0.1" min="0"></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Unit</label><input type="text" id="matUnt" placeholder="meters, pieces"></div>
-                    <div class="form-group"><label>Cost per Unit (€)</label><input type="number" id="matCst" step="0.01" min="0"></div>
-                </div>
-                <button type="submit" class="btn-primary">Add</button>
-            </form>
+            <button onclick="closeBagModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
         </div>
     </div>
 
     <script>
-        const app = { bags: [], productions: [], collections: [], inventory: [], settings: { rate: 15, margin: 30 } };
+        // FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyAosZ98kbQPTtCf_P6U71gmUa-zfyx0p0A",
+            authDomain: "remade-studio.firebaseapp.com",
+            projectId: "remade-studio",
+            storageBucket: "remade-studio.firebasestorage.app",
+            messagingSenderId: "890904163393",
+            appId: "1:890904163393:web:75ee8d452ba293e94ac2c0"
+        };
 
-        function init() {
-            const s = localStorage.getItem('remadeData');
-            if (s) try { Object.assign(app, JSON.parse(s)); } catch(e) {}
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // APP STATE
+        const app = {
+            bags: [],
+            productions: [],
+            collections: [],
+            designs: [],
+            journals: [],
+            inventory: [],
+            marketing: [],
+            settings: { rate: 15, margin: 30 }
+        };
+
+        // INIT
+        async function init() {
             document.getElementById('pDate').valueAsDate = new Date();
-            updateAll();
+            loadDataFromFirebase();
         }
 
-        function save() { localStorage.setItem('remadeData', JSON.stringify(app)); }
+        // FIREBASE OPERATIONS
+        async function loadDataFromFirebase() {
+            try {
+                // Load bags
+                const bagsSnap = await db.collection('bags').get();
+                app.bags = bagsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // Load productions
+                const prodsSnap = await db.collection('productions').get();
+                app.productions = prodsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // Load collections
+                const collsSnap = await db.collection('collections').get();
+                app.collections = collsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // Load inventory
+                const invSnap = await db.collection('inventory').get();
+                app.inventory = invSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // Load settings
+                const settSnap = await db.collection('settings').doc('main').get();
+                if (settSnap.exists) {
+                    app.settings = settSnap.data();
+                }
+
+                updateAllFirebase();
+            } catch (error) {
+                console.error('Firebase load error:', error);
+            }
+        }
+
+        async function saveToFirebase(collection, data, docId = null) {
+            try {
+                if (docId) {
+                    await db.collection(collection).doc(docId).set(data, { merge: true });
+                } else {
+                    await db.collection(collection).add(data);
+                }
+            } catch (error) {
+                console.error('Firebase save error:', error);
+            }
+        }
+
+        // PAGE SWITCHING
         function switchPage(p) {
             document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
@@ -891,12 +855,12 @@
             event.target.classList.add('active');
         }
 
-        document.getElementById('prodForm')?.addEventListener('submit', function(e) {
+        // PRODUCTION FORM
+        document.getElementById('prodForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
             const h = parseFloat(document.getElementById('pHours').value) || 0;
             const m = parseInt(document.getElementById('pMinutes').value) || 0;
             const prod = {
-                id: Date.now().toString(),
                 date: document.getElementById('pDate').value,
                 bagId: document.getElementById('pBag').value,
                 hours: h + m/60,
@@ -905,84 +869,91 @@
                 matCost: parseFloat(document.getElementById('pMatCost').value) || 0,
                 addCost: parseFloat(document.getElementById('pAddCost').value) || 0,
                 progress: parseInt(document.getElementById('pProgress').value) || 0,
-                notes: document.getElementById('pNotes').value
+                notes: document.getElementById('pNotes').value,
+                timestamp: new Date()
             };
+
+            await saveToFirebase('productions', prod);
             app.productions.push(prod);
+
             const b = app.bags.find(x => x.id === prod.bagId);
             if (b) {
                 b.hours = (b.hours || 0) + prod.hours;
                 b.sessions = (b.sessions || 0) + 1;
-                b.matCost = (b.matCost || 0) + prod.matCost;
-                b.addCost = (b.addCost || 0) + prod.addCost;
-                b.progress = prod.progress;
-                if (prod.progress >= 100) b.status = 'Completed';
+                await saveToFirebase('bags', b, b.id);
             }
-            save(); this.reset(); document.getElementById('pDate').valueAsDate = new Date(); updateAll();
+
+            this.reset();
+            document.getElementById('pDate').valueAsDate = new Date();
+            updateAllFirebase();
         });
 
+        // BAG MODAL
         function openBagModal() {
-            document.getElementById('bagMod').classList.add('active');
+            document.getElementById('bagMod').style.display = 'flex';
             const s = document.getElementById('bagCol');
             s.innerHTML = '<option>None</option>';
-            app.collections.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.text = c.name; s.appendChild(o); });
+            app.collections.forEach(c => {
+                const o = document.createElement('option');
+                o.value = c.id;
+                o.text = c.name;
+                s.appendChild(o);
+            });
         }
 
-        function closeBagModal() { document.getElementById('bagMod').classList.remove('active'); }
+        function closeBagModal() {
+            document.getElementById('bagMod').style.display = 'none';
+        }
 
-        document.getElementById('bagFrm')?.addEventListener('submit', function(e) {
+        document.getElementById('bagFrm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
-            app.bags.push({
-                id: Date.now().toString(),
+            const bag = {
                 name: document.getElementById('bagNm').value,
                 col: document.getElementById('bagCol').value,
                 startDate: document.getElementById('bagSt').value,
                 status: document.getElementById('bagSts').value,
                 desc: document.getElementById('bagDesc').value,
-                notes: document.getElementById('bagNts').value,
-                hours: 0, sessions: 0, progress: 0, matCost: 0, addCost: 0, sales: 0
-            });
-            save(); this.reset(); closeBagModal(); updateAll();
+                hours: 0,
+                sessions: 0,
+                progress: 0,
+                matCost: 0,
+                addCost: 0,
+                sales: 0,
+                timestamp: new Date()
+            };
+
+            const docRef = await db.collection('bags').add(bag);
+            bag.id = docRef.id;
+            app.bags.push(bag);
+
+            this.reset();
+            closeBagModal();
+            updateAllFirebase();
         });
 
-        function openCollModal() { document.getElementById('collMod').classList.add('active'); }
-        function closeCollModal() { document.getElementById('collMod').classList.remove('active'); }
+        // OTHER MODALS
+        function openCollModal() { alert('Create collection feature coming'); }
+        function openDesignModal() { alert('Design Lab feature coming'); }
+        function openJournalModal() { alert('Creative Journal feature coming'); }
+        function openInvModal() { alert('Add material feature coming'); }
+        function openMarketingModal() { alert('Marketing campaign feature coming'); }
 
-        document.getElementById('collFrm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            app.collections.push({ id: Date.now().toString(), name: document.getElementById('collNm').value, desc: document.getElementById('collDesc').value });
-            save(); this.reset(); closeCollModal(); updateAll();
-        });
-
-        function openInvModal() { document.getElementById('invMod').classList.add('active'); }
-        function closeInvModal() { document.getElementById('invMod').classList.remove('active'); }
-
-        document.getElementById('invFrm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            app.inventory.push({
-                id: Date.now().toString(),
-                name: document.getElementById('matNm').value,
-                cat: document.getElementById('matCat').value,
-                qty: parseFloat(document.getElementById('matQty').value) || 0,
-                unit: document.getElementById('matUnt').value,
-                cost: parseFloat(document.getElementById('matCst').value) || 0
-            });
-            save(); this.reset(); closeInvModal(); updateAll();
-        });
-
-        function updateAll() {
+        // UPDATE ALL
+        async function updateAllFirebase() {
             const rate = parseFloat(document.getElementById('fRate')?.value || app.settings.rate);
             const margin = parseInt(document.getElementById('fMargin')?.value || app.settings.margin);
-            const hours = app.productions.reduce((s, p) => s + p.hours, 0);
-            const completed = app.bags.filter(b => b.status === 'Completed' || b.status === 'Sold').length;
-            const inProg = app.bags.filter(b => b.status === 'In Progress' || b.status === 'Almost Finished').length;
+
+            const hours = app.productions.reduce((s, p) => s + (p.hours || 0), 0);
+            const completed = app.bags.filter(b => b.status === 'Completed').length;
+            const inProg = app.bags.filter(b => b.status === 'In Progress').length;
             const matCost = app.bags.reduce((s, b) => s + (b.matCost || 0), 0);
             const addCost = app.bags.reduce((s, b) => s + (b.addCost || 0), 0);
             const totalCost = matCost + addCost;
             const labour = hours * rate;
-            const estCost = totalCost + labour;
             const revenue = app.bags.reduce((s, b) => s + (b.sales || 0), 0);
-            const profit = revenue - estCost;
+            const invValue = app.inventory.reduce((s, m) => s + ((m.qty || 0) * (m.cost || 0)), 0);
 
+            // Update stats
             document.getElementById('s1').textContent = hours.toFixed(1);
             document.getElementById('s2').textContent = app.bags.length;
             document.getElementById('s3').textContent = completed;
@@ -990,94 +961,48 @@
             document.getElementById('s5').textContent = totalCost.toFixed(2);
             document.getElementById('s6').textContent = revenue.toFixed(2);
             document.getElementById('s7').textContent = completed > 0 ? (hours / completed).toFixed(1) : '0';
-            document.getElementById('s8').textContent = profit.toFixed(2);
+            document.getElementById('s8').textContent = invValue.toFixed(2);
 
             document.getElementById('f1').textContent = matCost.toFixed(2);
             document.getElementById('f2').textContent = labour.toFixed(2);
-            document.getElementById('f3').textContent = estCost.toFixed(2);
+            document.getElementById('f3').textContent = (matCost + labour).toFixed(2);
             document.getElementById('f4').textContent = revenue.toFixed(2);
-            document.getElementById('f5').textContent = ((estCost * (1 + margin/100)) - estCost).toFixed(2);
-            document.getElementById('f6').textContent = profit.toFixed(2);
 
             // Recent activity
             const recent = app.productions.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
             document.getElementById('recentAct').innerHTML = recent.length > 0 ? recent.map(p => {
                 const b = app.bags.find(x => x.id === p.bagId);
-                return `<div class="entry-item"><div class="entry-header"><div class="entry-title">${b?.name || 'Unknown'}</div><div class="entry-date">${new Date(p.date).toLocaleDateString()}</div></div><div class="entry-details"><span>${p.activity}</span><span>${p.hours.toFixed(1)}h</span><span>€${(p.matCost + p.addCost).toFixed(2)}</span></div></div>`;
-            }).join('') : '<div class="empty-state-text">No entries yet</div>';
-
-            // Projects
-            const proj = app.bags.filter(b => ['In Progress', 'Almost Finished', 'Planning'].includes(b.status));
-            document.getElementById('projects').innerHTML = proj.length > 0 ? proj.map(b => `<div class="entry-item"><div class="entry-header"><div class="entry-title">${b.name}</div><span class="badge badge-in-progress">${b.progress}%</span></div><div class="entry-details"><span>${(b.hours || 0).toFixed(1)}h</span><span>${b.status}</span></div></div>`).join('') : '<div class="empty-state-text">No active projects</div>';
-
-            // Production log
-            const sel = document.getElementById('pBag');
-            sel.innerHTML = '<option>Select bag</option>';
-            app.bags.forEach(b => { const o = document.createElement('option'); o.value = b.id; o.text = b.name; sel.appendChild(o); });
-
-            const hist = app.productions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            document.getElementById('prodHist').innerHTML = hist.length > 0 ? hist.map(p => {
-                const b = app.bags.find(x => x.id === p.bagId);
-                return `<div class="entry-item"><div class="entry-header"><div><div class="entry-title">${b?.name || 'Unknown'} - ${p.activity}</div><div class="entry-date">${new Date(p.date).toLocaleDateString()}</div></div><button class="btn-small btn-danger" onclick="app.productions=app.productions.filter(x=>x.id!=='${p.id}'); const bb=app.bags.find(y=>y.id==='${p.bagId}'); if(bb){bb.hours=Math.max(0,(bb.hours||0)-${p.hours}); bb.sessions=Math.max(0,(bb.sessions||0)-1);} save(); updateAll();">Delete</button></div><div class="entry-details"><span>${p.hours.toFixed(1)}h</span><span>€${(p.matCost + p.addCost).toFixed(2)}</span><span>${p.progress}%</span>${p.notes ? `<br><em>${p.notes}</em>` : ''}</div></div>`;
-            }).join('') : '<div class="empty-state"><div class="empty-state-icon">📝</div><div class="empty-state-title">No entries</div></div>';
+                return `<div style="padding: 15px; border-bottom: 1px solid var(--border);"><strong>${b?.name || 'Unknown'}</strong><br><small>${p.activity} • ${p.hours.toFixed(1)}h</small></div>`;
+            }).join('') : '<p style="color: var(--sage);">No entries yet</p>';
 
             // Bags list
-            document.getElementById('bagsList').innerHTML = app.bags.length > 0 ? app.bags.map(b => {
-                const cost = (b.matCost || 0) + (b.addCost || 0) + ((b.hours || 0) * rate);
-                const p = (b.sales || 0) - cost;
-                const c = app.collections.find(x => x.id === b.col)?.name || '—';
-                return `<div class="card"><div style="display: flex; justify-content: space-between; margin-bottom: 20px;"><div><div class="card-title" style="margin: 0; border: none; padding: 0;">${b.name}</div><div style="font-size: 12px; color: var(--sage); margin-top: 5px;">${c}</div></div><span class="badge badge-${b.status === 'Completed' || b.status === 'Sold' ? 'completed' : 'in-progress'}">${b.status}</span></div><table style="margin: 0;"><tr><td><strong>Hours:</strong></td><td>${(b.hours || 0).toFixed(1)}h</td></tr><tr><td><strong>Sessions:</strong></td><td>${b.sessions || 0}</td></tr><tr><td><strong>Material Cost:</strong></td><td>€${(b.matCost || 0).toFixed(2)}</td></tr><tr><td><strong>Additional:</strong></td><td>€${(b.addCost || 0).toFixed(2)}</td></tr><tr><td><strong>Labour:</strong></td><td>€${((b.hours || 0) * rate).toFixed(2)}</td></tr><tr style="border-top: 2px solid var(--border);"><td><strong>Total Cost:</strong></td><td><strong>€${cost.toFixed(2)}</strong></td></tr><tr><td><strong>Suggested Price:</strong></td><td>€${(cost * (1 + margin/100)).toFixed(2)}</td></tr><tr><td><strong>Actual Sales:</strong></td><td>€${(b.sales || 0).toFixed(2)}</td></tr><tr style="background: ${p >= 0 ? '#E8F5F1' : '#FDF1ED'};"><td><strong>Profit:</strong></td><td style="color: ${p >= 0 ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">€${p.toFixed(2)}</td></tr></table>${b.desc ? `<p style="margin-top: 15px; font-size: 13px;">${b.desc}</p>` : ''}${b.notes ? `<p style="margin-top: 10px; font-size: 12px; color: var(--sage); font-style: italic;">${b.notes}</p>` : ''}</div>`;
-            }).join('') : '<div class="empty-state"><div class="empty-state-icon">👜</div><div class="empty-state-title">No bags</div></div>';
-
-            // Collections
-            document.getElementById('collList').innerHTML = app.collections.length > 0 ? app.collections.map(c => {
-                const bags = app.bags.filter(b => b.col === c.id);
-                const h = bags.reduce((s, b) => s + (b.hours || 0), 0);
-                const cst = bags.reduce((s, b) => s + (b.matCost || 0) + (b.addCost || 0), 0);
-                const cmpl = bags.filter(b => b.status === 'Completed' || b.status === 'Sold').length;
-                const rev = bags.reduce((s, b) => s + (b.sales || 0), 0);
-                return `<div class="card"><div class="card-title">${c.name}</div>${c.desc ? `<p style="margin-bottom: 15px;">${c.desc}</p>` : ''}<table style="margin: 0;"><tr><td><strong>Bags:</strong></td><td>${bags.length}</td></tr><tr><td><strong>Completed:</strong></td><td>${cmpl}</td></tr><tr><td><strong>Hours:</strong></td><td>${h.toFixed(1)}h</td></tr><tr><td><strong>Expenses:</strong></td><td>€${cst.toFixed(2)}</td></tr><tr><td><strong>Revenue:</strong></td><td>€${rev.toFixed(2)}</td></tr></table></div>`;
-            }).join('') : '<div class="empty-state"><div class="empty-state-icon">📚</div><div class="empty-state-title">No collections</div></div>';
-
-            // Inventory
-            document.getElementById('invList').innerHTML = app.inventory.length > 0 ? app.inventory.map(m => `<div class="card"><div style="display: flex; justify-content: space-between; margin-bottom: 15px;"><div><div class="card-title" style="margin: 0; border: none; padding: 0;">${m.name}</div><div style="font-size: 12px; color: var(--sage); margin-top: 5px;">${m.cat}</div></div><span class="badge badge-planned">${m.qty} ${m.unit}</span></div><table style="margin: 0;"><tr><td><strong>Cost/Unit:</strong></td><td>€${m.cost.toFixed(2)}</td></tr><tr><td><strong>Total Value:</strong></td><td>€${(m.qty * m.cost).toFixed(2)}</td></tr></table></div>`).join('') : '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-title">No materials</div></div>';
-
-            // Analytics
-            const timePerBag = app.bags.filter(b => (b.hours || 0) > 0).sort((a, b) => (b.hours || 0) - (a.hours || 0));
-            document.getElementById('timePerBag').innerHTML = timePerBag.length > 0 ? `<table><tr><th>Bag</th><th>Hours</th><th>Sessions</th></tr>${timePerBag.map(b => `<tr><td>${b.name}</td><td>${(b.hours || 0).toFixed(1)}h</td><td>${b.sessions || 0}</td></tr>`).join('')}</table>` : '<div class="empty-state-text">No data</div>';
-
-            const avgH = app.bags.length > 0 ? hours / app.bags.filter(b => (b.hours || 0) > 0).length : 0;
-            const avgS = app.productions.length > 0 ? hours / app.productions.length : 0;
-            const mostT = timePerBag[0]?.name || '—';
-            const acts = {};
-            app.productions.forEach(p => { acts[p.activity] = (acts[p.activity] || 0) + 1; });
-            const mostA = Object.keys(acts).reduce((a, b) => (acts[a] || 0) >= (acts[b] || 0) ? a : b, '—');
-
-            document.getElementById('m1').textContent = avgH.toFixed(1);
-            document.getElementById('m2').textContent = avgS.toFixed(1);
-            document.getElementById('m3').textContent = mostT;
-            document.getElementById('m4').textContent = mostA;
-
-            // Financial table
-            document.getElementById('profTable').innerHTML = app.bags.length > 0 ? `<table><tr><th>Bag</th><th>Total Cost</th><th>Suggested</th><th>Actual Sales</th><th>Profit</th></tr>${app.bags.map(b => {
-                const c = (b.matCost || 0) + (b.addCost || 0) + ((b.hours || 0) * rate);
-                const prof = (b.sales || 0) - c;
-                return `<tr style="background: ${prof >= 0 ? '#E8F5F1' : '#FDF1ED'};"><td>${b.name}</td><td>€${c.toFixed(2)}</td><td>€${(c * (1 + margin/100)).toFixed(2)}</td><td>€${(b.sales || 0).toFixed(2)}</td><td style="color: ${prof >= 0 ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">€${prof.toFixed(2)}</td></tr>`;
-            }).join('')}</table>` : '<div class="empty-state-text">No bags</div>';
+            document.getElementById('bagsList').innerHTML = app.bags.length > 0 ? app.bags.map(b => `
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <h3 style="font-family: 'Crimson Text', serif; font-size: 20px; margin: 0;">${b.name}</h3>
+                        <span style="background: var(--light-bg); padding: 6px 12px; border-radius: 20px; font-size: 11px;">${b.status}</span>
+                    </div>
+                    <table style="margin: 0;">
+                        <tr><td><strong>Hours:</strong></td><td>${(b.hours || 0).toFixed(1)}h</td></tr>
+                        <tr><td><strong>Sessions:</strong></td><td>${b.sessions || 0}</td></tr>
+                        <tr><td><strong>Material Cost:</strong></td><td>€${(b.matCost || 0).toFixed(2)}</td></tr>
+                        <tr><td><strong>Additional Cost:</strong></td><td>€${(b.addCost || 0).toFixed(2)}</td></tr>
+                        <tr><td><strong>Actual Sales:</strong></td><td>€${(b.sales || 0).toFixed(2)}</td></tr>
+                    </table>
+                </div>
+            `).join('') : '<div class="empty-state"><div class="empty-state-title">No bags yet</div></div>';
 
             // Charts
             drawCharts();
         }
 
+        // CHARTS
         function drawCharts() {
-            const rate = parseFloat(document.getElementById('fRate')?.value || app.settings.rate);
-            
-            // Weekly
             const weeks = {};
             app.productions.forEach(p => {
                 const d = new Date(p.date);
                 const w = `W${Math.ceil(d.getDate() / 7)}`;
-                weeks[w] = (weeks[w] || 0) + p.hours;
+                weeks[w] = (weeks[w] || 0) + (p.hours || 0);
             });
 
             const ctx1 = document.getElementById('chart1');
@@ -1086,87 +1011,31 @@
                 type: 'line',
                 data: {
                     labels: Object.keys(weeks),
-                    datasets: [{ label: 'Hours', data: Object.values(weeks), borderColor: 'var(--forest-green)', backgroundColor: 'rgba(25, 61, 48, 0.05)', tension: 0.3, fill: true, borderWidth: 2 }]
+                    datasets: [{
+                        label: 'Hours',
+                        data: Object.values(weeks),
+                        borderColor: 'var(--forest-green)',
+                        backgroundColor: 'rgba(25, 61, 48, 0.05)',
+                        tension: 0.3,
+                        fill: true,
+                        borderWidth: 2
+                    }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
-
-            const ctx2 = document.getElementById('chart2');
-            if (ctx2 && window.c2) window.c2.destroy();
-            if (ctx2) window.c2 = new Chart(ctx2, {
-                type: 'bar',
-                data: { labels: Object.keys(weeks), datasets: [{ label: 'Hours', data: Object.values(weeks), backgroundColor: 'var(--forest-green)', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-
-            // Activity
-            const acts = {};
-            app.productions.forEach(p => { acts[p.activity] = (acts[p.activity] || 0) + 1; });
-
-            const ctx3 = document.getElementById('chart3');
-            if (ctx3 && window.c3) window.c3.destroy();
-            if (ctx3) window.c3 = new Chart(ctx3, {
-                type: 'doughnut',
-                data: { labels: Object.keys(acts), datasets: [{ data: Object.values(acts), backgroundColor: ['var(--forest-green)', 'var(--sage)', 'var(--beige)', 'var(--charcoal)', 'var(--warning)'] }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-
-            // Revenue
-            const months = {};
-            app.bags.forEach(b => {
-                if (b.startDate && b.sales) {
-                    const d = new Date(b.startDate);
-                    const m = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-                    months[m] = (months[m] || 0) + b.sales;
-                }
-            });
-
-            const ctx4 = document.getElementById('chart4');
-            if (ctx4 && window.c4) window.c4.destroy();
-            if (ctx4) window.c4 = new Chart(ctx4, {
-                type: 'bar',
-                data: { labels: Object.keys(months), datasets: [{ label: 'Revenue', data: Object.values(months), backgroundColor: 'var(--success)', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
         }
 
-        function genReport() {
-            const t = document.getElementById('repType').value;
-            let html = '';
-            if (t === 'weekly') {
-                const w = {};
-                app.productions.forEach(p => {
-                    const d = new Date(p.date);
-                    const wk = `W${Math.ceil(d.getDate() / 7)}`;
-                    if (!w[wk]) w[wk] = { entries: 0, hours: 0, cost: 0 };
-                    w[wk].entries += 1;
-                    w[wk].hours += p.hours;
-                    w[wk].cost += p.matCost + p.addCost;
-                });
-                html = '<table><tr><th>Week</th><th>Entries</th><th>Hours</th><th>Cost</th></tr>' + Object.entries(w).map(([wk, d]) => `<tr><td>${wk}</td><td>${d.entries}</td><td>${d.hours.toFixed(1)}h</td><td>€${d.cost.toFixed(2)}</td></tr>`).join('') + '</table>';
-            } else if (t === 'production') {
-                const s = app.productions.sort((a, b) => new Date(b.date) - new Date(a.date));
-                html = '<table><tr><th>Date</th><th>Bag</th><th>Activity</th><th>Hours</th><th>Cost</th></tr>' + s.map(p => {
-                    const b = app.bags.find(x => x.id === p.bagId);
-                    return `<tr><td>${new Date(p.date).toLocaleDateString()}</td><td>${b?.name || '—'}</td><td>${p.activity}</td><td>${p.hours.toFixed(1)}h</td><td>€${(p.matCost + p.addCost).toFixed(2)}</td></tr>`;
-                }).join('') + '</table>';
-            } else if (t === 'financial') {
-                const rate = parseFloat(document.getElementById('fRate')?.value || app.settings.rate);
-                const h = app.productions.reduce((s, p) => s + p.hours, 0);
-                const m = app.bags.reduce((s, b) => s + (b.matCost || 0), 0);
-                const a = app.bags.reduce((s, b) => s + (b.addCost || 0), 0);
-                const l = h * rate;
-                html = `<table><tr><td>Total Hours</td><td>${h.toFixed(1)}h</td></tr><tr><td>Material Costs</td><td>€${m.toFixed(2)}</td></tr><tr><td>Additional Costs</td><td>€${a.toFixed(2)}</td></tr><tr><td>Labour Value</td><td>€${l.toFixed(2)}</td></tr><tr><td>Total Production Cost</td><td>€${(m + a + l).toFixed(2)}</td></tr><tr><td>Total Revenue</td><td>€${app.bags.reduce((s, b) => s + (b.sales || 0), 0).toFixed(2)}</td></tr></table>`;
-            }
-            document.getElementById('repOut').innerHTML = html || '<p style="color: var(--sage);">No data</p>';
+        // EXPORTS
+        function expJSON() {
+            const json = JSON.stringify(app, null, 2);
+            downloadFile(json, 'remade-backup.json', 'application/json');
         }
 
-        function expJSON() { downloadFile(JSON.stringify(app, null, 2), 'remade-backup.json', 'application/json'); }
         function expCSV() {
-            let csv = 'Date,Bag,Activity,Hours,Material Cost,Additional Cost,Notes\n';
+            let csv = 'Date,Bag,Activity,Hours,Cost\n';
             app.productions.forEach(p => {
                 const b = app.bags.find(x => x.id === p.bagId);
-                csv += `"${p.date}","${b?.name || '—'}","${p.activity}",${p.hours},${p.matCost},${p.addCost},"${p.notes}"\n`;
+                csv += `"${p.date}","${b?.name || '—'}","${p.activity}",${p.hours},"${(p.matCost + p.addCost).toFixed(2)}"\n`;
             });
             downloadFile(csv, 'remade-production.csv', 'text/csv');
         }
@@ -1183,30 +1052,17 @@
             URL.revokeObjectURL(u);
         }
 
-        function exportData() { expJSON(); }
+        function restData() { alert('Restore feature coming'); }
 
-        function restData() {
-            const f = document.getElementById('restFile').files[0] || document.getElementById('restFile2').files[0];
-            if (!f) return;
-            const r = new FileReader();
-            r.onload = (e) => {
-                try {
-                    const d = JSON.parse(e.target.result);
-                    Object.assign(app, d);
-                    save();
-                    updateAll();
-                } catch(err) {}
-            };
-            r.readAsText(f);
-        }
+        function genReport() { alert('Report generation coming'); }
 
-        function savSet() {
+        function saveSettings() {
             app.settings.rate = parseFloat(document.getElementById('setRate').value);
             app.settings.margin = parseInt(document.getElementById('setMargin').value);
-            save();
-            updateAll();
+            db.collection('settings').doc('main').set(app.settings);
         }
 
+        // START
         init();
     </script>
 </body>
